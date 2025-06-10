@@ -53,7 +53,7 @@ html {
 }
 
 h1 {
-    font-size: 5em;
+    font-size: 5rem;
     font-optical-sizing: auto;
     font-weight: 700;
     font-style: normal;
@@ -67,9 +67,9 @@ body {
 #newProjectBtn {
     background-color: #463F3A;
     color: #F4F3EE;
-    font-size: 1em;
+    font-size: 1rem;
     padding: 1%;
-    border-radius: 1em;
+    border-radius: 1rem;
     font-weight: 300;
     margin: 1% 0;
 }
@@ -82,11 +82,11 @@ body {
 
 #container {
   display: flex;
-  gap: 2em;
+  gap: 2rem;
 }
 
 #container > div {
-  padding: 1.3em;
+  padding: 1.3rem;
   border: 2px solid red;
 }
 
@@ -95,13 +95,19 @@ body {
   flex-direction: column;
 }
 
+#newProjectForm {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
 h2.title {
-  font-size: 1.5em;
+  font-size: 1.5rem;
   font-weight: 500;
 }
 
 p.desc {
-  font-size: .75em;
+  font-size: .75rem;
 }
 
 .overlay {
@@ -131,11 +137,11 @@ button[type="submit"] {
   margin-top: 1rem;
   background-color: #463F3A;
   color: #F4F3EE;
-  border-radius: .6em;
+  border-radius: .6rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: .5em;
+  gap: .5rem;
 }
 
 .hidden {
