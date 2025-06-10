@@ -18,6 +18,7 @@ function renderProject () {
         allProjects.forEach((projectItem, uuid) => {
             const project = document.createElement("div");
             const title = document.createElement("h2");
+            const titleExpand = document.createElement("a");
             const description = document.createElement("p");
             const dueDate = document.createElement("div");
             
@@ -25,7 +26,9 @@ function renderProject () {
             title.classList.add("title");
             description.classList.add("desc");
             dueDate.classList.add("dueDate");
+            titleExpand.href = "#";
 
+            title.appendChild(titleExpand);
             project.appendChild(title);
             project.appendChild(description);
             project.appendChild(dueDate);
@@ -34,7 +37,7 @@ function renderProject () {
             let dueDateString = `${format(dDate, 'MMM do, yyyy')}`;
 
             project.dataset.projectid = projectItem.getID();
-            title.textContent = projectItem.title;
+            titleExpand.textContent = projectItem.title;
             description.textContent = projectItem.description;
             dueDate.textContent = `Due Date: ${dueDateString}`;
             dueDate.title = `in ${formatDistanceToNowStrict(dDate)}`;

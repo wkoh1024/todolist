@@ -157,3 +157,6 @@ button[type="submit"] {
   align-self: flex-end;
 }
 
+a:visited {
+  color:#463F3A
+}
