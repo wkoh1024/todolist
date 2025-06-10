@@ -89,3 +89,12 @@ body {
   padding: 1.3em;
   border: 2px solid red;
 }
+
+#newProjectForm div {
+  display: flex;
+  flex-direction: column;
+}
+
+/* #close-modal {
+  border-radius: 50%;
+} */
