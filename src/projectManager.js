@@ -1,12 +1,12 @@
-import {format} from "date-fns";
+import {format, formatDistanceToNowStrict} from "date-fns";
 
 let allProjects = new Map();
 let container = document.querySelector("#container");
 
 
-function createProject (title, description, dueDate) {
+function createProject (title, description, dueDate, toDoArray) {
     let uuid = self.crypto.randomUUID();
-    const project = {title, description, dueDate};
+    const project = {title, description, dueDate, toDoArray};
     allProjects.set(uuid, project);
     return project;
 }
@@ -27,12 +27,13 @@ function renderProject () {
             project.appendChild(description);
             project.appendChild(dueDate);
 
-            let dueDateString = format(projectItem.dueDate, 'MMM do, yyyy');
+            let dDate = projectItem.dueDate;
+            let dueDateString = `${format(dDate, 'MMM do, yyyy')}`;
 
-            project.title = projectItem.description;
             title.textContent = projectItem.title;
             description.textContent = projectItem.description;
             dueDate.textContent = `Due Date: ${dueDateString}`;
+            dueDate.title = `in ${formatDistanceToNowStrict(dDate)}`;
 
             container.appendChild(project);
         });
