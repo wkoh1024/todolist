@@ -6,7 +6,10 @@ let container = document.querySelector("#container");
 
 function createProject (title, description, dueDate, toDoArray) {
     let uuid = self.crypto.randomUUID();
-    const project = {title, description, dueDate, toDoArray};
+    const getID = function () {
+        return uuid;
+    };
+    const project = {title, description, dueDate, toDoArray, getID};
     allProjects.set(uuid, project);
     return project;
 }
@@ -30,6 +33,7 @@ function renderProject () {
             let dDate = projectItem.dueDate;
             let dueDateString = `${format(dDate, 'MMM do, yyyy')}`;
 
+            project.dataset.projectid = projectItem.getID();
             title.textContent = projectItem.title;
             description.textContent = projectItem.description;
             dueDate.textContent = `Due Date: ${dueDateString}`;
