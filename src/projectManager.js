@@ -18,12 +18,10 @@ function renderProject () {
             const description = document.createElement("p");
             const dueDate = document.createElement("div");
             
-            
             project.classList.add("project");
             title.classList.add("title");
             description.classList.add("desc");
             dueDate.classList.add("dueDate");
-            
 
             project.appendChild(title);
             project.appendChild(description);
@@ -31,9 +29,10 @@ function renderProject () {
 
             let dueDateString = format(projectItem.dueDate, 'MMM do, yyyy');
 
+            project.title = projectItem.description;
             title.textContent = projectItem.title;
             description.textContent = projectItem.description;
-            dueDate.textContent = dueDateString;
+            dueDate.textContent = `Due Date: ${dueDateString}`;
 
             container.appendChild(project);
         });
