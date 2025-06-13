@@ -133,7 +133,7 @@ p.desc {
   flex-direction: column;
 }
 
-button[type="submit"] {
+.modal button {
   margin-top: 1rem;
   background-color: #463F3A;
   color: #F4F3EE;
@@ -157,6 +157,6 @@ button[type="submit"] {
   align-self: flex-end;
 }
 
-a:visited {
+a {
   color:#463F3A
 }
