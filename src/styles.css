@@ -64,7 +64,7 @@ body {
     color: #463F3A;
 }
 
-#newProjectBtn {
+#new-proj-btn {
     background-color: #463F3A;
     color: #F4F3EE;
     font-size: 1rem;
@@ -80,14 +80,11 @@ body {
   align-items: center;
 }
 
-#container {
-  display: flex;
-  gap: 2rem;
-}
 
-#container > div {
+.project {
   padding: 1.3rem;
   border: 2px solid red;
+  height: auto;
 }
 
 #newProjectForm div {
@@ -111,7 +108,6 @@ p.desc {
 }
 
 .overlay {
-  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
@@ -120,21 +116,14 @@ p.desc {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(3px);
-  z-index: 1;
 }
 
 .modal {
-  z-index: 2;
   background-color: #F4F3EE;
   padding: 1rem;
-  position: absolute;
-  top: 20%;
-  display: flex;
-  flex-direction: column;
 }
 
 .modal button {
-  margin-top: 1rem;
   background-color: #463F3A;
   color: #F4F3EE;
   border-radius: .6rem;
@@ -142,6 +131,11 @@ p.desc {
   justify-content: center;
   align-items: center;
   gap: .5rem;
+}
+
+.modal .btn-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .hidden {
@@ -159,4 +153,48 @@ p.desc {
 
 a {
   color:#463F3A
+}
+
+button[type="submit"] {
+  margin-bottom: .5rem;
+}
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+.todo-container {
+  margin-top: 1rem;
+}
+
+.todo-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.todo-item .priority {
+  text-align: center;
+}
+
+.todo-item label input {
+  margin-right: .5rem;
+}
+
+.todo-item label {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.delete-btn:hover {
+    filter: brightness(0) saturate(100%) invert(12%) sepia(94%) saturate(5836%) hue-rotate(3deg) brightness(105%) contrast(118%);
+    transform: scale(1.1);
+}
+
+.delete-btn {
+  height: 3rem;
+  cursor: pointer;
 }
