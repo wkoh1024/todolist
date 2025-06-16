@@ -12,9 +12,10 @@
 <body>
     <h1>Todoer</h1>
     <button id="new-proj-btn" class="btn btn-open">Add New Project</button>
-    <section class="modal hidden">
+    <dialog class="modal">
         <button id="close-modal">X</button>
-        <fieldset id="newProjectForm">
+        <form>
+            <fieldset id="newProjectForm">
             <div>
                 <label for="title">Title</label>
                 <input type="text" name="title" id="title">
@@ -31,16 +32,16 @@
             </div>
             <div>
                 <label for="toDo">To Do's</label>
-                <input type="text" name="toDo" id="toDo"  >
+                <input type="text" name="toDo" id="toDo" placeholder="Press enter to create item" >
             </div>
             <div id="to-do">
                 
             </div>
         </fieldset>
+        </form>
         <button type="submit">Create Project<i class='bx bx-file-blank'></i></button>
-        <button>Clear To-Do's<i class='bx bx-x-circle'></i></button>
-    </section>
-    <div class="overlay hidden"></div>
+        <button id="clear-to-do">Clear To-Do's<i class='bx bx-x-circle'></i></button>
+    </dialog>
     <div id="container">
         
     </div>
