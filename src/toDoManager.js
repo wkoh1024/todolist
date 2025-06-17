@@ -1,5 +1,3 @@
-let allToDos = new Map();
-let container = document.querySelector("#container");
 import trashIcon from "./trash icon.svg"
 
 function createToDo (description, priority) {
@@ -24,7 +22,6 @@ function createToDo (description, priority) {
             this.priority = newPriority
         }
     };
-    allToDos.set(uuid, todo);
     return todo;
 }
 
@@ -38,7 +35,7 @@ function renderTodo(projectItem) {
     const todoContainer = document.createElement('div');
     todoContainer.classList.add('todo-container');
     
-    if (projectItem.toDoArray) {
+    if (!(projectItem.toDoArray === undefined)) {
         projectItem.toDoArray.forEach((todoitem) => {
             let deleteBtn = document.createElement("img");
             deleteBtn.src = trashIcon;
@@ -51,6 +48,7 @@ function renderTodo(projectItem) {
             
             let description = document.createElement("span");
             description.textContent = todoitem.description;
+            description.contentEditable = true;
             
             
             let priorityBadge = document.createElement("select");
@@ -79,12 +77,8 @@ function renderTodo(projectItem) {
             checkbox.checked = todoitem.completed;
             checkbox.addEventListener("change", () => todoitem.toggle());
             
-            let label = document.createElement("label");
-
-            label.appendChild(checkbox);
-            label.appendChild(description);
-            
-            todoElement.appendChild(label);
+            todoElement.appendChild(checkbox);
+            todoElement.appendChild(description);
             todoElement.appendChild(priorityBadge);
             todoElement.appendChild(deleteBtn);
             
@@ -95,12 +89,10 @@ function renderTodo(projectItem) {
     return todoContainer;
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-    renderTodo();
-});
+
+
 
 export {
-    allToDos, 
     createToDo,
     renderTodo
 }
