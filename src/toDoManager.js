@@ -28,6 +28,11 @@ function createToDo (description, priority) {
     return todo;
 }
 
+function deleteToDoBtn (e) {
+    let node = e.target.parentNode;
+    node.remove();
+}
+
 
 function renderTodo(projectItem) {
     const todoContainer = document.createElement('div');
@@ -38,6 +43,7 @@ function renderTodo(projectItem) {
             let deleteBtn = document.createElement("img");
             deleteBtn.src = trashIcon;
             deleteBtn.classList.add("delete-btn");
+            deleteBtn.addEventListener("click", deleteToDoBtn);
 
             let todoElement = document.createElement("div");
             todoElement.classList.add("todo-item");

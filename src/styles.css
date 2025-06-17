@@ -164,16 +164,10 @@ dialog::backdrop {
     backdrop-filter: blur(3px);
 }
 
-.todo-container {
-  margin-top: 1rem;
-}
-
 .todo-item {
   display: grid;
-  grid-template-columns: 2fr 1fr auto;
-  gap: 0.5rem;
+  grid-template-columns: 2fr auto auto;
   align-items: center;
-  margin-bottom: 0.5rem;
 }
 
 .todo-item .priority {
@@ -202,4 +196,5 @@ dialog::backdrop {
 label span {
   display: flex;
   align-items: center;
+  padding-right: 1rem;
 }
