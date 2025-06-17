@@ -191,6 +191,7 @@ dialog::backdrop {
 .delete-btn {
   height: 2.5rem;
   cursor: pointer;
+  transition: all .1s ease-in-out;
 }
 
 label span {
