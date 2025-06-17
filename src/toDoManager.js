@@ -46,9 +46,27 @@ function renderTodo(projectItem) {
             let description = document.createElement("span");
             description.textContent = todoitem.description;
             
-            let priorityBadge = document.createElement("span");
+            
+            let priorityBadge = document.createElement("select");
+            let highPriority = document.createElement("option");
+            highPriority.value = "high";
+            highPriority.textContent = "High";
+
+            let mediumPriority = document.createElement("option");
+            mediumPriority.value = "medium";
+            mediumPriority.textContent = "Medium";
+
+            let lowPriority = document.createElement("option");
+            lowPriority.value = "low";
+            lowPriority.textContent = "Low";
+
+            priorityBadge.appendChild(highPriority);
+            priorityBadge.appendChild(mediumPriority);
+            priorityBadge.appendChild(lowPriority);
+
+            priorityBadge.value = todoitem.priority;
+            
             priorityBadge.classList.add("priority", todoitem.priority);
-            priorityBadge.textContent = todoitem.priority;
             
             let checkbox = document.createElement("input");
             checkbox.type = "checkbox";

@@ -195,6 +195,11 @@ dialog::backdrop {
 }
 
 .delete-btn {
-  height: 3rem;
+  height: 2.5rem;
   cursor: pointer;
+}
+
+label span {
+  display: flex;
+  align-items: center;
 }
