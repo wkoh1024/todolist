@@ -166,7 +166,7 @@ dialog::backdrop {
 
 .todo-item {
   display: grid;
-  grid-template-columns: 2fr auto auto;
+  grid-template-columns: auto 2fr auto auto;
   align-items: center;
 }
 
@@ -194,8 +194,17 @@ dialog::backdrop {
   transition: all .1s ease-in-out;
 }
 
-label span {
+.todo-item span {
   display: flex;
   align-items: center;
   padding-right: 1rem;
+  padding-left: .2rem;
+}
+
+.todo-item input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+.todo-item span:focus {
+  outline: none;
 }
