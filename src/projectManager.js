@@ -29,6 +29,7 @@ function createProject (title, description, dueDate, toDoArray) {
 
 function renderProject () {
     allProjects.forEach((projectItem) => {
+
         const project = document.createElement("div");
         project.classList.add("project");
         project.dataset.projectid = projectItem.getID();
@@ -46,6 +47,10 @@ function renderProject () {
         description.classList.add("desc");
         description.textContent = projectItem.description;
 
+
+        // TODO: need to change date format to make it
+        // more edit friendly; easier to type numbers instead
+        // of month itself with proper formatting
         const dueDate = document.createElement("div");
         dueDate.classList.add("dueDate");
         let dDate = projectItem.dueDate;
@@ -56,6 +61,14 @@ function renderProject () {
         project.appendChild(title);
         project.appendChild(description);
         project.appendChild(dueDate);
+
+        // TODO: make addToDo btn to create more items
+        // add functionality and style button (?) better
+        const addToDoBtn = document.createElement("button");
+        const addToDoBtnSymbol = document.createElement("i");
+        addToDoBtn.appendChild(addToDoBtnSymbol);
+        addToDoBtn.className = "bx bx-message-square-add";
+        title.appendChild(addToDoBtn);
 
         const todoContainer = renderTodo(projectItem);
         project.appendChild(todoContainer);

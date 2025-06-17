@@ -208,3 +208,14 @@ dialog::backdrop {
 .todo-item span:focus {
   outline: none;
 }
+
+.project .title button {
+  background-color: none;
+  border: none;
+  margin-left: auto;
+
+}
+
+h2.title {
+  display: flex;
+}
