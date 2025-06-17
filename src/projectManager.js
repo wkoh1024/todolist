@@ -1,4 +1,6 @@
 import {format, formatDistanceToNowStrict} from "date-fns";
+import { createToDo, renderTodo } from './toDoManager.js';
+
 
 let allProjects = new Map();
 let container = document.querySelector("#container");
@@ -6,49 +8,77 @@ let container = document.querySelector("#container");
 
 function createProject (title, description, dueDate, toDoArray) {
     let uuid = self.crypto.randomUUID();
-    const getID = function () {
-        return uuid;
+    const project = {
+        title, description, dueDate, toDoArray,
+
+        getID() {
+            return uuid;
+        },
+
+        updateTitle(newTitle) {
+            this.title = newTitle;
+        },
+
+        updateDescription(newDescription) {
+            this.description = newDescription;
+        }
     };
-    const project = {title, description, dueDate, toDoArray, getID};
     allProjects.set(uuid, project);
     return project;
 }
 
 function renderProject () {
-        allProjects.forEach((projectItem, uuid) => {
-            const project = document.createElement("div");
-            const title = document.createElement("h2");
-            const titleExpand = document.createElement("a");
-            const description = document.createElement("p");
-            const dueDate = document.createElement("div");
-            
-            project.classList.add("project");
-            title.classList.add("title");
-            description.classList.add("desc");
-            dueDate.classList.add("dueDate");
-            titleExpand.href = "#";
+    allProjects.forEach((projectItem) => {
+        const project = document.createElement("div");
+        project.classList.add("project");
+        project.dataset.projectid = projectItem.getID();
 
-            title.appendChild(titleExpand);
-            project.appendChild(title);
-            project.appendChild(description);
-            project.appendChild(dueDate);
+        const title = document.createElement("h2");
+        title.classList.add("title");
 
-            let dDate = projectItem.dueDate;
-            let dueDateString = `${format(dDate, 'MMM do, yyyy')}`;
+        const titleExpand = document.createElement("a");
+        titleExpand.href = "#";
+        titleExpand.textContent = projectItem.title;
 
-            project.dataset.projectid = projectItem.getID();
-            titleExpand.textContent = projectItem.title;
-            description.textContent = projectItem.description;
-            dueDate.textContent = `Due Date: ${dueDateString}`;
-            dueDate.title = `in ${formatDistanceToNowStrict(dDate)}`;
+        title.appendChild(titleExpand);
 
-            container.appendChild(project);
-        });
+        const description = document.createElement("p");
+        description.classList.add("desc");
+        description.textContent = projectItem.description;
+
+        const dueDate = document.createElement("div");
+        dueDate.classList.add("dueDate");
+        let dDate = projectItem.dueDate;
+        let dueDateString = `${format(dDate, 'MMM do, yyyy')}`;
+        dueDate.textContent = `Due Date: ${dueDateString}`;
+        dueDate.title = `in ${formatDistanceToNowStrict(dDate)}`;
+
+        project.appendChild(title);
+        project.appendChild(description);
+        project.appendChild(dueDate);
+
+        const todoContainer = renderTodo(projectItem);
+        project.appendChild(todoContainer);
+
+        container.appendChild(project);
+    });
 }
+
+function editDetails (e) {
+    e.target
+}
+
+
+const todoss = [
+    createToDo("Research React", "high"),
+    createToDo("Practice TypeScript", "medium")
+];
+
 const project1 = createProject(
     "Learn JavaScript",
     "Complete the basics of JS including functions and objects",
-    new Date("2025-06-30")
+    new Date("2025-06-30"),
+    todoss
 );
 
 const project2 = createProject(
@@ -68,6 +98,6 @@ renderProject();
 console.log(allProjects);
 
 export {
-    allProjects as allProjects
+    allProjects as allProjects,
+    createProject as createProject
 };
-// console.log(self.crypto.randomUUID())
