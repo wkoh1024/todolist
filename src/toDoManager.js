@@ -30,6 +30,13 @@ function deleteToDoBtn (e) {
     node.remove();
 }
 
+function deleteBtnKeyboardInteraction (e) {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    e.target.click();
+  }
+}
+
 
 function renderTodo(projectItem) {
     const todoContainer = document.createElement('div');
@@ -41,6 +48,8 @@ function renderTodo(projectItem) {
             deleteBtn.src = trashIcon;
             deleteBtn.classList.add("delete-btn");
             deleteBtn.addEventListener("click", deleteToDoBtn);
+            deleteBtn.tabIndex = 0;
+            deleteBtn.addEventListener('keydown', deleteBtnKeyboardInteraction);
 
             let todoElement = document.createElement("div");
             todoElement.classList.add("todo-item");
