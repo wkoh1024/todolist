@@ -1,6 +1,6 @@
 import trashIcon from "./trash icon.svg"
 
-function createToDo (description, priority) {
+function createToDo (description, priority, projectToDoMap) {
     let uuid = self.crypto.randomUUID();
     const todo = {
         description, priority,
@@ -22,12 +22,18 @@ function createToDo (description, priority) {
             this.priority = newPriority
         }
     };
+    projectToDoMap.set(uuid, todo);
+    console.log(projectToDoMap);
     return todo;
 }
 
-function deleteToDoBtn (e) {
+function DOMdeleteToDo (e) {
     let node = e.target.parentNode;
     node.remove();
+}
+
+function backendDeleteToDo (project, todoID) {
+    let map = project.toDoMap;
 }
 
 function deleteBtnKeyboardInteraction (e) {
@@ -42,12 +48,12 @@ function renderTodo(projectItem) {
     const todoContainer = document.createElement('div');
     todoContainer.classList.add('todo-container');
     
-    if (!(projectItem.toDoArray === undefined)) {
-        projectItem.toDoArray.forEach((todoitem) => {
+    if (!(projectItem.toDoMap === undefined)) {
+        projectItem.toDoMap.forEach((todoitem) => {
             let deleteBtn = document.createElement("img");
             deleteBtn.src = trashIcon;
             deleteBtn.classList.add("delete-btn");
-            deleteBtn.addEventListener("click", deleteToDoBtn);
+            deleteBtn.addEventListener("click", DOMdeleteToDo);
             deleteBtn.tabIndex = 0;
             deleteBtn.addEventListener('keydown', deleteBtnKeyboardInteraction);
 
@@ -94,12 +100,8 @@ function renderTodo(projectItem) {
             todoContainer.appendChild(todoElement);
         });
     }
-    
     return todoContainer;
 }
-
-
-
 
 export {
     createToDo,

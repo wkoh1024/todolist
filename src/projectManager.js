@@ -6,10 +6,10 @@ let allProjects = new Map();
 let container = document.querySelector("#container");
 
 
-function createProject (title, description, dueDate, toDoArray) {
+function createProject (title, description, dueDate, toDoMap) {
     let uuid = self.crypto.randomUUID();
     const project = {
-        title, description, dueDate, toDoArray,
+        title, description, dueDate, toDoMap,
 
         getID() {
             return uuid;
@@ -21,6 +21,10 @@ function createProject (title, description, dueDate, toDoArray) {
 
         updateDescription(newDescription) {
             this.description = newDescription;
+        },
+
+        getToDoMap() {
+            return this.toDoMap;
         }
     };
     allProjects.set(uuid, project);
@@ -64,7 +68,7 @@ function renderProject () {
 
         let addToDoField = document.createElement("input");
         addToDoField.type = "text";
-        addToDoField.placeholder = "Add a to-do and press Enter";
+        addToDoField.placeholder = "Press Enter to add";
         addToDoField.className = "addToDoField";
 
         let addToDoPriority = document.createElement("select");
@@ -94,8 +98,8 @@ function renderProject () {
         project.appendChild(addToDoWrapper);
 
         addToDoBtn.addEventListener("click", () => {
-            addToDoField.classList.add("visible");
-            addToDoPriority.classList.add("visible");
+            addToDoField.classList.toggle("visible");
+            addToDoPriority.classList.toggle("visible");
             addToDoField.focus();
         });
 
@@ -130,17 +134,15 @@ function editDetails (e) {
 }
 
 
-const todoss = [
-    createToDo("Research React", "high"),
-    createToDo("Practice TypeScript", "medium")
-];
-
 const project1 = createProject(
     "Learn JavaScript",
     "Complete the basics of JS including functions and objects",
     new Date("2025-06-30"),
-    todoss
+    new Map()
 );
+
+createToDo("Research React", "high", project1.getToDoMap())
+createToDo("Practice TypeScript", "medium", project1.getToDoMap())
 
 const project2 = createProject(
     "Build Portfolio",

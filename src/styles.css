@@ -232,14 +232,14 @@ h2.title button {
 }
 
 .bx-message-square-add:hover {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .addToDoWrapper {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin: 0.5rem 0;
 }
 
 .addToDoField {
