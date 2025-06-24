@@ -210,12 +210,59 @@ dialog::backdrop {
 }
 
 .project .title button {
-  background-color: none;
-  border: none;
+  /* border: none; */
   margin-left: auto;
-
+  border-radius: 50%;
 }
 
 h2.title {
   display: flex;
+}
+
+h2.title button {
+  height: 2rem;
+}
+
+.bx-message-square-add {
+    transition: all .1s ease-in-out;
+}
+
+.title a {
+  margin-right: 1rem;
+}
+
+.bx-message-square-add:hover {
+    transform: scale(1.1);
+}
+
+.addToDoWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.addToDoField {
+  display: none;
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.addToDoPriority {
+  display: none;
+}
+
+.addToDoField.visible,
+.addToDoPriority.visible {
+  display: inline-block;
+}
+
+.priority {
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  font-size: 1rem;
 }

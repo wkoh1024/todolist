@@ -28,8 +28,8 @@ function createProject (title, description, dueDate, toDoArray) {
 }
 
 function renderProject () {
+    container.text = "";
     allProjects.forEach((projectItem) => {
-
         const project = document.createElement("div");
         project.classList.add("project");
         project.dataset.projectid = projectItem.getID();
@@ -40,17 +40,20 @@ function renderProject () {
         const titleExpand = document.createElement("a");
         titleExpand.href = "#";
         titleExpand.textContent = projectItem.title;
-
         title.appendChild(titleExpand);
+
+        const addToDoBtn = document.createElement("button");
+        addToDoBtn.className = "addToDoBtn";
+        addToDoBtn.title = "Add To-Do";
+        const addToDoBtnSymbol = document.createElement("i");
+        addToDoBtnSymbol.className = "bx bx-message-square-add";
+        addToDoBtn.appendChild(addToDoBtnSymbol);
+        title.appendChild(addToDoBtn);
 
         const description = document.createElement("p");
         description.classList.add("desc");
         description.textContent = projectItem.description;
 
-
-        // TODO: need to change date format to make it
-        // more edit friendly; easier to type numbers instead
-        // of month itself with proper formatting
         const dueDate = document.createElement("div");
         dueDate.classList.add("dueDate");
         let dDate = projectItem.dueDate;
@@ -58,17 +61,62 @@ function renderProject () {
         dueDate.textContent = `Due Date: ${dueDateString}`;
         dueDate.title = `in ${formatDistanceToNowStrict(dDate)}`;
 
+
+        let addToDoField = document.createElement("input");
+        addToDoField.type = "text";
+        addToDoField.placeholder = "Add a to-do and press Enter";
+        addToDoField.className = "addToDoField";
+
+        let addToDoPriority = document.createElement("select");
+        addToDoPriority.className = "addToDoPriority addToDoField priority";
+        [
+            { value: "high", text: "High" },
+            { value: "medium", text: "Medium" },
+            { value: "low", text: "Low" }
+        ].forEach(opt => {
+            let option = document.createElement("option");
+            option.value = opt.value;
+            option.textContent = opt.text;
+            addToDoPriority.appendChild(option);
+        });
+
+        // default priority
+        addToDoPriority.value = "medium";
+
+        let addToDoWrapper = document.createElement("div");
+        addToDoWrapper.className = "addToDoWrapper";
+        addToDoWrapper.appendChild(addToDoField);
+        addToDoWrapper.appendChild(addToDoPriority);
+
         project.appendChild(title);
         project.appendChild(description);
         project.appendChild(dueDate);
+        project.appendChild(addToDoWrapper);
 
-        // TODO: make addToDo btn to create more items
-        // add functionality and style button (?) better
-        const addToDoBtn = document.createElement("button");
-        const addToDoBtnSymbol = document.createElement("i");
-        addToDoBtn.appendChild(addToDoBtnSymbol);
-        addToDoBtn.className = "bx bx-message-square-add";
-        title.appendChild(addToDoBtn);
+        addToDoBtn.addEventListener("click", () => {
+            addToDoField.classList.add("visible");
+            addToDoPriority.classList.add("visible");
+            addToDoField.focus();
+        });
+
+        addToDoField.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                const value = addToDoField.value.trim();
+                const priority = addToDoPriority.value;
+                if (value.length === 0) return;
+                if (!projectItem.toDoArray) projectItem.toDoArray = [];
+                const newToDo = createToDo(value, priority);
+                projectItem.toDoArray.push(newToDo);
+                addToDoField.value = "";
+
+                const newTodoContainer = renderTodo(projectItem);
+
+                const oldTodoContainer = project.querySelector('.todo-container');
+                if (oldTodoContainer) oldTodoContainer.remove();
+                project.appendChild(newTodoContainer);
+                addToDoField.focus();
+            }
+        });
 
         const todoContainer = renderTodo(projectItem);
         project.appendChild(todoContainer);
