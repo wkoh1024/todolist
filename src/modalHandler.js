@@ -14,7 +14,7 @@ const closeModal = function (e) {
   modal.close();
 };
 
-const toDoHandler = function (e) {
+const toDoInputHandler = function (e) {
     if ((e.key === 'Enter')) {
       let toDoInputBox = e.target;
       let toDoInputBoxText = toDoInputBox.value;
@@ -28,7 +28,7 @@ const toDoHandler = function (e) {
     }
 };
 
-toDo.addEventListener("keydown", toDoHandler)
+
+toDo.addEventListener("keydown", toDoInputHandler)
 openModalBtn.addEventListener("click", openModal);
 closeModalBtn.addEventListener("click", closeModal);
-
