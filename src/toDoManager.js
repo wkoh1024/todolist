@@ -1,4 +1,5 @@
 import trashIcon from "./trash icon.svg"
+import { allProjects } from "./projectManager";
 
 function createToDo (description, priority, projectToDoMap) {
     let uuid = self.crypto.randomUUID();
@@ -29,8 +30,15 @@ function createToDo (description, priority, projectToDoMap) {
 function deleteToDo (e) {
     // delete from DOM
     let toDoItem = e.target.parentNode;
-    let toDoItemID = toDoItem.data
-    node.remove();
+    let toDoItemID = toDoItem.dataset.todoid;
+    let projectID = toDoItem.parentNode.parentNode.dataset.projectid;
+
+    console.log(toDoItemID);
+    toDoItem.remove();
+    
+    // delete from map
+    let projectItem = allProjects.get(projectID);
+    projectItem.getToDoMap().delete(toDoItemID);
 }
 
 function backendDeleteToDo (project, todoID) {
