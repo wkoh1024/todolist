@@ -108,9 +108,8 @@ function renderProject () {
                 const value = addToDoField.value.trim();
                 const priority = addToDoPriority.value;
                 if (value.length === 0) return;
-                if (!projectItem.toDoArray) projectItem.toDoArray = [];
-                const newToDo = createToDo(value, priority);
-                projectItem.toDoArray.push(newToDo);
+                if (!projectItem.toDoMap) projectItem.toDoMap = new Map();
+                const newToDo = createToDo(value, priority, projectItem.toDoMap);
                 addToDoField.value = "";
 
                 const newTodoContainer = renderTodo(projectItem);

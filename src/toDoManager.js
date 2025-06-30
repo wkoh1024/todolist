@@ -23,12 +23,13 @@ function createToDo (description, priority, projectToDoMap) {
         }
     };
     projectToDoMap.set(uuid, todo);
-    console.log(projectToDoMap);
     return todo;
 }
 
-function DOMdeleteToDo (e) {
-    let node = e.target.parentNode;
+function deleteToDo (e) {
+    // delete from DOM
+    let toDoItem = e.target.parentNode;
+    let toDoItemID = toDoItem.data
     node.remove();
 }
 
@@ -53,7 +54,7 @@ function renderTodo(projectItem) {
             let deleteBtn = document.createElement("img");
             deleteBtn.src = trashIcon;
             deleteBtn.classList.add("delete-btn");
-            deleteBtn.addEventListener("click", DOMdeleteToDo);
+            deleteBtn.addEventListener("click", deleteToDo);
             deleteBtn.tabIndex = 0;
             deleteBtn.addEventListener('keydown', deleteBtnKeyboardInteraction);
 
