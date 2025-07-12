@@ -45,6 +45,13 @@ function renderProject () {
         titleExpand.href = "#";
         titleExpand.textContent = projectItem.title;
         title.appendChild(titleExpand);
+        titleExpand.contentEditable = true;
+        titleExpand.addEventListener("blur", e => {
+            if (e.target.textContent != projectItem.title) {
+                projectItem.updateTitle(e.target.textContent);
+                console.log(projectItem.title); 
+            }
+        })
 
         const addToDoBtn = document.createElement("button");
         addToDoBtn.className = "addToDoBtn";
@@ -61,7 +68,8 @@ function renderProject () {
         const dueDate = document.createElement("div");
         dueDate.classList.add("dueDate");
         let dDate = projectItem.dueDate;
-        let dueDateString = `${format(dDate, 'MMM do, yyyy')}`;
+        let dueDateString = `${format(dDate, 'M/d/yyyy')}`;
+        console.log(new Date(dueDateString));
         dueDate.textContent = `Due Date: ${dueDateString}`;
         dueDate.title = `in ${formatDistanceToNowStrict(dDate)}`;
 
@@ -126,10 +134,6 @@ function renderProject () {
 
         container.appendChild(project);
     });
-}
-
-function editDetails (e) {
-    e.target
 }
 
 

@@ -4,8 +4,7 @@ import { allProjects } from "./projectManager";
 function createToDo (description, priority, projectToDoMap) {
     let uuid = self.crypto.randomUUID();
     const todo = {
-        description, priority,
-        completed: false,
+        description, priority,completed: false,
 
         getID() {
             return uuid;
@@ -41,17 +40,12 @@ function deleteToDo (e) {
     projectItem.getToDoMap().delete(toDoItemID);
 }
 
-function backendDeleteToDo (project, todoID) {
-    let map = project.toDoMap;
-}
-
 function deleteBtnKeyboardInteraction (e) {
   if (e.key === 'Enter' || e.key === ' ') {
     e.preventDefault();
     e.target.click();
   }
 }
-
 
 function renderTodo(projectItem) {
     const todoContainer = document.createElement('div');
@@ -73,6 +67,11 @@ function renderTodo(projectItem) {
             let description = document.createElement("span");
             description.textContent = todoitem.description;
             description.contentEditable = true;
+            description.addEventListener("blur", e => {
+                if (todoitem.description !== e.target.textContent) {
+                    todoitem.updateDescription(e.target.textContent);
+                }
+            })
             
             
             let priorityBadge = document.createElement("select");
@@ -88,13 +87,17 @@ function renderTodo(projectItem) {
             lowPriority.value = "low";
             lowPriority.textContent = "Low";
 
+            priorityBadge.addEventListener("change", e => {
+                todoitem.updatePriority(e.target.value);
+            });
+
             priorityBadge.appendChild(highPriority);
             priorityBadge.appendChild(mediumPriority);
             priorityBadge.appendChild(lowPriority);
 
             priorityBadge.value = todoitem.priority;
             
-            priorityBadge.classList.add("priority", todoitem.priority);
+            priorityBadge.classList.add("priority");
             
             let checkbox = document.createElement("input");
             checkbox.type = "checkbox";
