@@ -9,7 +9,7 @@ let container = document.querySelector("#container");
 function createProject (title, description, dueDate, toDoMap) {
     let uuid = self.crypto.randomUUID();
     const project = {
-        title, description, dueDate, toDoMap,
+        title, description, dueDate, toDoMap: new Map(),
 
         getID() {
             return uuid;
@@ -45,7 +45,7 @@ function renderProject () {
         titleExpand.href = "#";
         titleExpand.textContent = projectItem.title;
         title.appendChild(titleExpand);
-        titleExpand.contentEditable = true;
+        titleExpand.contentEditable= "plaintext-only";
         titleExpand.addEventListener("blur", e => {
             if (e.target.textContent != projectItem.title) {
                 projectItem.updateTitle(e.target.textContent);
@@ -64,14 +64,28 @@ function renderProject () {
         const description = document.createElement("p");
         description.classList.add("desc");
         description.textContent = projectItem.description;
+        description.contentEditable= "plaintext-only";
+        description.addEventListener("blur", e => {
+                if (projectItem.description !== e.target.textContent) {
+                    projectItem.updateDescription(e.target.textContent);
+                    console.log(projectItem);
+                }
+            })
 
+        const dueDateContainer = document.createElement("div");
+        const dueDateText = document.createElement("div");
         const dueDate = document.createElement("div");
-        dueDate.classList.add("dueDate");
-        let dDate = projectItem.dueDate;
-        let dueDateString = `${format(dDate, 'M/d/yyyy')}`;
-        console.log(new Date(dueDateString));
-        dueDate.textContent = `Due Date: ${dueDateString}`;
-        dueDate.title = `in ${formatDistanceToNowStrict(dDate)}`;
+        dueDateContainer.className = "dueDate whitespace-pre-wrap";
+        dueDateContainer.style.display = "flex";
+        dueDate.contentEditable = "plaintext-only";
+
+        dueDateText.textContent = "Due Date: ";
+        dueDate.textContent = `${format(projectItem.dueDate, 'M/d/yyyy')}`;
+        // console.log(new Date(dueDateString));
+        // dueDateContainer.textContent = `Due Date: ${dueDateString}`;
+        dueDateContainer.title = `in ${formatDistanceToNowStrict(projectItem.dueDate)}`;
+        dueDateContainer.appendChild(dueDateText);
+        dueDateContainer.appendChild(dueDate);
 
 
         let addToDoField = document.createElement("input");
@@ -102,7 +116,7 @@ function renderProject () {
 
         project.appendChild(title);
         project.appendChild(description);
-        project.appendChild(dueDate);
+        project.appendChild(dueDateContainer);
         project.appendChild(addToDoWrapper);
 
         addToDoBtn.addEventListener("click", () => {
@@ -140,8 +154,7 @@ function renderProject () {
 const project1 = createProject(
     "Learn JavaScript",
     "Complete the basics of JS including functions and objects",
-    new Date("2025-06-30"),
-    new Map()
+    new Date("2025-06-30")
 );
 
 createToDo("Research React", "high", project1.getToDoMap())
