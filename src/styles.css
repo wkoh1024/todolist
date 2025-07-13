@@ -197,10 +197,6 @@ dialog::backdrop {
   transform: scale(1.2);
 }
 
-.todo-item span:focus {
-  outline: none;
-}
-
 .project .title button {
   /* border: none; */
   margin-left: auto;
@@ -266,4 +262,12 @@ h2.title button {
 
 p.desc {
   padding-bottom: .5rem;
+}
+
+.whitespace-pre-wrap {
+  white-space: pre-wrap;
+}
+
+[contenteditable = "plaintext-only"]:focus {
+  outline: none;
 }
