@@ -66,7 +66,7 @@ function renderTodo(projectItem) {
             
             let description = document.createElement("span");
             description.textContent = todoitem.description;
-            description.contentEditable = true;
+            description.contentEditable= "plaintext-only";
             description.addEventListener("blur", e => {
                 if (todoitem.description !== e.target.textContent) {
                     todoitem.updateDescription(e.target.textContent);
