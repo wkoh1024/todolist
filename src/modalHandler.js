@@ -1,3 +1,5 @@
+import "./toDoManager.js";
+
 const modal = document.querySelector(".modal");
 const openModalBtn = document.querySelector("#new-proj-btn");
 const closeModalBtn = document.querySelector("#close-modal");
@@ -21,6 +23,8 @@ const toDoInputHandler = function (e) {
 
       toDoInputBox.value = "";
 
+      // TODO: add a priority field for entering new
+      // to do items during initial project creation
       let toDoItem = document.createElement("div");
       toDoItem.textContent = toDoInputBoxText;
 
