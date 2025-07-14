@@ -1,4 +1,4 @@
-import {format, formatDistanceToNowStrict} from "date-fns";
+import {format, formatDistanceToNowStrict, toDate} from "date-fns";
 import { createToDo, renderTodo } from './toDoManager.js';
 
 
@@ -71,18 +71,27 @@ function renderProject () {
                     console.log(projectItem);
                 }
             })
+        let today = new Date();
+        let todayMonth = String(today.getMonth() + 1).padStart(2, '0');
+        let todayDay = String(today.getDate()).padStart(2, '0');
+        let todayYear = today.getFullYear();
+        today = `${todayYear}-${todayMonth}-${todayDay}`;
 
         const dueDateContainer = document.createElement("div");
         const dueDateText = document.createElement("div");
-        const dueDate = document.createElement("div");
+        const dueDate = document.createElement("input");
         dueDateContainer.className = "dueDate whitespace-pre-wrap";
-        dueDateContainer.style.display = "flex";
-        dueDate.contentEditable = "plaintext-only";
+        dueDate.type = "date";
+        dueDate.min = today;
 
         dueDateText.textContent = "Due Date: ";
-        dueDate.textContent = `${format(projectItem.dueDate, 'M/d/yyyy')}`;
-        // console.log(new Date(dueDateString));
-        // dueDateContainer.textContent = `Due Date: ${dueDateString}`;
+        dueDate.valueAsDate = projectItem.dueDate;
+        dueDate.addEventListener("blur", e => {
+            console.log(e.target.valueAsDate)
+            if (dueDate.valueAsDate !== e.target.valueAsDate) {
+
+            };
+        });
         dueDateContainer.title = `in ${formatDistanceToNowStrict(projectItem.dueDate)}`;
         dueDateContainer.appendChild(dueDateText);
         dueDateContainer.appendChild(dueDate);
@@ -154,7 +163,7 @@ function renderProject () {
 const project1 = createProject(
     "Learn JavaScript",
     "Complete the basics of JS including functions and objects",
-    new Date("2025-06-30")
+    new Date("2025-09-30")
 );
 
 createToDo("Research React", "high", project1.getToDoMap())
@@ -163,13 +172,13 @@ createToDo("Practice TypeScript", "medium", project1.getToDoMap())
 const project2 = createProject(
     "Build Portfolio",
     "Create a personal portfolio website using HTML/CSS",
-    new Date("2025-07-15")
+    new Date("2025-09-15")
 );
 
 const project3 = createProject(
     "Read Design Patterns Book",
     "Study and implement common design patterns",
-    new Date("2025-08-01")
+    new Date("2025-10-01")
 );
 
 renderProject();
