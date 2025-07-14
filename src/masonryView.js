@@ -1,15 +1,17 @@
-// import Masonry from "masonry-layout";
+import Masonry from "masonry-layout";
 
-// const container = document.querySelector("#container");
+const container = document.querySelector("#container");
 
-// let msny = new Masonry(container, {
-//     itemSelector: '.project', 
-//     columnWidth: '.project',
-//     gutter: 40, 
-//     fitWidth: true, 
-//     transitionDuration: '0.2s'
-// });
+let msny = new Masonry(container, {
+    itemSelector: '.project', 
+    columnWidth: '.project',
+    gutter: 20, 
+    fitWidth: true, 
+    transitionDuration: '0.1s'
+});
 
-// window.addEventListener('load', () => {
-//     msny.layout();
-// });
+msny.layout();
+
+container.addEventListener('change', () => {
+    msny.layout();
+});
