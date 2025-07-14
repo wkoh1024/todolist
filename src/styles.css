@@ -270,4 +270,10 @@ p.desc {
 
 [contenteditable = "plaintext-only"]:focus {
   outline: none;
+  background-color: #FFEB99;
+}
+
+.dueDate {
+  display: flex;
+  align-items: center;
 }
