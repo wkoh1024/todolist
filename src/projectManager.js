@@ -1,5 +1,6 @@
-import {format, formatDistanceToNowStrict, toDate} from "date-fns";
+import {format, formatDistanceToNowStrict, parseISO} from "date-fns";
 import { createToDo, renderTodo } from './toDoManager.js';
+import { toZonedTime as utcToZonedTime } from 'date-fns-tz'; //
 
 
 let allProjects = new Map();
@@ -71,6 +72,10 @@ function renderProject () {
                     console.log(projectItem);
                 }
             })
+
+        const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const localDueDate = utcToZonedTime(projectItem.dueDate, localTimeZone); 
+        console.log(projectItem.dueDate)
         let today = new Date();
         let todayMonth = String(today.getMonth() + 1).padStart(2, '0');
         let todayDay = String(today.getDate()).padStart(2, '0');
@@ -84,13 +89,14 @@ function renderProject () {
         dueDate.type = "date";
         dueDate.min = today;
 
-        dueDateText.textContent = "Due Date: ";
-        dueDate.valueAsDate = projectItem.dueDate;
-        dueDate.addEventListener("blur", e => {
-            console.log(e.target.valueAsDate)
-            if (dueDate.valueAsDate !== e.target.valueAsDate) {
 
-            };
+        dueDateText.textContent = "Due Date: ";
+        dueDate.valueAsDate = localDueDate;
+        dueDate.addEventListener("blur", e => {
+            const newDate = e.target.value;
+            const localNewDate = utcToZonedTime(newDate, localTimeZone)
+            console.log(localNewDate);
+
         });
         dueDateContainer.title = `in ${formatDistanceToNowStrict(projectItem.dueDate)}`;
         dueDateContainer.appendChild(dueDateText);
@@ -159,11 +165,10 @@ function renderProject () {
     });
 }
 
-
 const project1 = createProject(
     "Learn JavaScript",
     "Complete the basics of JS including functions and objects",
-    new Date("2025-09-30")
+    new Date("2025-09-30 ")
 );
 
 createToDo("Research React", "high", project1.getToDoMap())
