@@ -7,7 +7,7 @@ let allProjects = new Map();
 let container = document.querySelector("#container");
 
 
-function createProject (title, description, dueDate, toDoMap) {
+function createProject (title, description, dueDate) {
     let uuid = self.crypto.randomUUID();
     const project = {
         title, description, dueDate, toDoMap: new Map(),
@@ -30,6 +30,10 @@ function createProject (title, description, dueDate, toDoMap) {
 
         getToDoMap() {
             return this.toDoMap;
+        },
+
+        addToDo(toDo) {
+            this.toDoMap.set(toDo.getID(), toDo);
         }
     };
     allProjects.set(uuid, project);
@@ -151,7 +155,8 @@ function renderProject () {
                 const priority = addToDoPriority.value;
                 if (value.length === 0) return;
                 if (!projectItem.toDoMap) projectItem.toDoMap = new Map();
-                const newToDo = createToDo(value, priority, projectItem.toDoMap);
+                const newToDo = createToDo(value, priority);
+                projectItem.addToDo(newToDo);
                 addToDoField.value = "";
 
                 const newTodoContainer = renderTodo(projectItem);
@@ -176,8 +181,11 @@ const project1 = createProject(
     new Date("2025-09-30")
 );
 
-createToDo("Research React", "high", project1.getToDoMap())
-createToDo("Practice TypeScript", "medium", project1.getToDoMap())
+let toDo1 = createToDo("Research React", "high")
+project1.addToDo(toDo1);
+
+let toDo2 = createToDo("Practice TypeScript", "medium");
+project1.addToDo(toDo2);
 
 const project2 = createProject(
     "Build Portfolio",

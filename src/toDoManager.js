@@ -1,7 +1,7 @@
 import trashIcon from "./trash icon.svg"
 import { allProjects } from "./projectManager";
 
-function createToDo (description, priority, projectToDoMap) {
+function createToDo (description, priority) {
     let uuid = self.crypto.randomUUID();
     const todo = {
         description, priority,completed: false,
@@ -22,7 +22,6 @@ function createToDo (description, priority, projectToDoMap) {
             this.priority = newPriority
         }
     };
-    projectToDoMap.set(uuid, todo);
     return todo;
 }
 
