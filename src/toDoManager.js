@@ -32,7 +32,6 @@ function deleteToDo (e) {
     let toDoItemID = toDoItem.dataset.todoid;
     let projectID = toDoItem.parentNode.parentNode.dataset.projectid;
 
-    console.log(toDoItemID);
     toDoItem.remove();
     
     // delete from map

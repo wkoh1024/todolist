@@ -24,12 +24,22 @@ function createProject (title, description, dueDate, toDoMap) {
             this.description = newDescription;
         },
 
+        updateDueDate(newDueDate) {
+            this.dueDate = newDueDate;
+        },
+
         getToDoMap() {
             return this.toDoMap;
         }
     };
     allProjects.set(uuid, project);
     return project;
+}
+
+let flattenDatetoLocalTimeZone = (date) => {
+    let localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let localDueDate = utcToZonedTime(date, localTimeZone); 
+    return localDueDate;
 }
 
 function renderProject () {
@@ -69,11 +79,9 @@ function renderProject () {
         description.addEventListener("blur", e => {
                 if (projectItem.description !== e.target.textContent) {
                     projectItem.updateDescription(e.target.textContent);
-                    console.log(projectItem);
                 }
             })
 
-        console.log(projectItem.dueDate)
         let today = new Date();
         let todayMonth = String(today.getMonth() + 1).padStart(2, '0');
         let todayDay = String(today.getDate()).padStart(2, '0');
@@ -87,15 +95,13 @@ function renderProject () {
         dueDate.type = "date";
         dueDate.min = today;
 
-        let localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        let localDueDate = utcToZonedTime(projectItem.dueDate, localTimeZone); 
+
         dueDateText.textContent = "Due Date: ";
-        dueDate.valueAsDate = localDueDate;
+        dueDate.valueAsDate = flattenDatetoLocalTimeZone(projectItem.dueDate);
         dueDate.addEventListener("blur", e => {
-            localTimeZone =  Intl.DateTimeFormat().resolvedOptions().timeZone;
             const newDate = e.target.value;
-            const localNewDate = utcToZonedTime(newDate, localTimeZone)
-            console.log(localNewDate);
+            projectItem.updateDueDate(flattenDatetoLocalTimeZone(newDate));
+            console.log(projectItem.dueDate);
         });
         dueDateContainer.title = `in ${formatDistanceToNowStrict(projectItem.dueDate)}`;
         dueDateContainer.appendChild(dueDateText);
