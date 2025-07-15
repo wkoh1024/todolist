@@ -31,9 +31,18 @@ const toDoInputHandler = function (e) {
 
         let toDoItem = document.createElement("div");
         let toDoItemPriority = document.createElement("select");
+        toDoItemPriority.addEventListener('change', e => {
+          let toDoItemID = toDoItem.dataset.todoId;
+          if (toDoMap.has(toDoItemID)) {
+            let todo = toDoMap.get(toDoItemID);
+            todo.updatePriority(e.target.value);
+          }
+          console.log(toDoMap)
+        });
         let deleteBtn = document.createElement("img");
         deleteBtn.src = trashIcon;
         deleteBtn.classList.add("delete-btn");
+        
         toDoItemPriority.classList.add("priority");
         toDoItemPriority.innerHTML = `
           <option value="high">High</option>
@@ -50,6 +59,7 @@ const toDoInputHandler = function (e) {
 
         let createdToDo = createToDo(toDoInputBoxText, toDoPriority);
         toDoItem.dataset.todoId = createdToDo.getID();
+        toDoMap.set(createdToDo.getID(), createdToDo);
         toDoContainer.appendChild(toDoItem);
       }
     }

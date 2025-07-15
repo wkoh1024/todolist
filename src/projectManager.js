@@ -87,6 +87,7 @@ function renderProject () {
             })
 
         let today = new Date();
+        // must be in YYYY-MM-DD format for input type="date", this pads it if single digit
         let todayMonth = String(today.getMonth() + 1).padStart(2, '0');
         let todayDay = String(today.getDate()).padStart(2, '0');
         let todayYear = today.getFullYear();

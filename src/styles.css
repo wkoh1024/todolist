@@ -89,7 +89,7 @@ body {
   margin-bottom: 20px;
 }
 
-#newProjectForm div {
+#newProjectForm > div {
   display: flex;
   flex-direction: column;
 }
@@ -114,6 +114,7 @@ body {
 .modal {
   background-color: #F4F3EE;
   padding: 1rem;
+  width: 30%;
 }
 
 .modal button {
@@ -149,7 +150,7 @@ a {
 }
 
 button[type="submit"] {
-  margin-bottom: .5rem;
+  margin: .5rem 0;
 }
 
 dialog::backdrop {
@@ -163,7 +164,7 @@ dialog::backdrop {
   align-items: center;
 }
 
-.todo-item .priority {
+.priority {
   text-align: center;
 }
 
@@ -279,3 +280,14 @@ p.desc {
   display: flex;
   align-items: center;
 }
+
+#to-do {
+  gap: .3rem;
+}
+
+#to-do div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
