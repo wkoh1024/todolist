@@ -1,5 +1,7 @@
 import "./toDoManager.js";
+import trashIcon from "./trash icon.svg"
 import { createProject } from "./projectManager.js";
+import { createToDo } from "./toDoManager.js";
 
 const modal = document.querySelector(".modal");
 const openModalBtn = document.querySelector("#new-proj-btn");
@@ -8,7 +10,7 @@ const toDo = document.querySelector("#toDo");
 const toDoContainer = document.querySelector("#to-do");
 const dueDate = document.querySelector("#dueDate");
 const createProjectBtn = document.querySelector("#create-project");
-let toDoArray = [];
+let toDoMap = new Map();
 
 const openModal = function () {
   modal.showModal();
@@ -21,24 +23,48 @@ const closeModal = function (e) {
 const toDoInputHandler = function (e) {
     if ((e.key === 'Enter')) {
       let toDoInputBox = e.target;
-      let toDoPriority = document.querySelector("select.priority").value;
-      let toDoInputBoxText = toDoInputBox.value;
+      if (e.target.value.trim() !== "") {
+        let toDoPriority = document.querySelector("select.priority").value;
+        let toDoInputBoxText = toDoInputBox.value;
 
-      toDoInputBox.value = "";
+        toDoInputBox.value = "";
 
-      let toDoItem = document.createElement("div");
-      let toDoItemPriority = document.createElement("select");
-      toDoItemPriority.classList.add("priority");
-      toDoItemPriority.innerHTML = `
-        <option value="high">High</option>
-        <option value="medium">Medium</option>
-        <option value="low">Low</option>
-      `;
-      toDoItem.appendChild(toDoItemPriority);
-      toDoItem.textContent = toDoInputBoxText;
+        let toDoItem = document.createElement("div");
+        let toDoItemPriority = document.createElement("select");
+        let deleteBtn = document.createElement("img");
+        deleteBtn.src = trashIcon;
+        deleteBtn.classList.add("delete-btn");
+        toDoItemPriority.classList.add("priority");
+        toDoItemPriority.innerHTML = `
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        `;
 
-      toDoContainer.appendChild(toDoItem);
+        deleteBtn.addEventListener("click", deleteToDo); 
+        deleteBtn.tabIndex = 0;
+        
+        toDoItem.textContent = toDoInputBoxText;
+        toDoItem.appendChild(toDoItemPriority);
+        toDoItem.appendChild(deleteBtn);
+
+        let createdToDo = createToDo(toDoInputBoxText, toDoPriority);
+        toDoItem.dataset.todoId = createdToDo.getID();
+        toDoContainer.appendChild(toDoItem);
+      }
     }
+};
+
+let deleteToDo = (e) => {
+  // delete from DOM
+  let toDoItem = e.target.parentNode;
+  let toDoItemID = toDoItem.dataset.todoid;
+  toDoItem.remove();
+
+  // delete from map
+  if (toDoMap.has(toDoItemID)) {
+    toDoMap.delete(toDoItemID);
+  }
 };
 
 let resetModal = () => {
