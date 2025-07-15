@@ -10,7 +10,6 @@ let msny = new Masonry(container, {
     fitWidth: true, 
     transitionDuration: '0.2s',
     horizontalOrder: true,
-    // fitWidth: true
 
 });
 
@@ -19,7 +18,6 @@ msny.layout();
 const resizeObserver = new ResizeObserver(entries => {
     for (let entry of entries) {
         msny.layout();
-        console.log("Resized:", entry.target);
     }
 });
 
