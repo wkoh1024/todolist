@@ -1,6 +1,6 @@
 import "./toDoManager.js";
 import trashIcon from "./trash icon.svg"
-import { createProject } from "./projectManager.js";
+import { createProject, renderProject } from "./projectManager.js";
 import { createToDo } from "./toDoManager.js";
 
 const modal = document.querySelector(".modal");
@@ -24,7 +24,7 @@ const toDoInputHandler = function (e) {
     if ((e.key === 'Enter')) {
       let toDoInputBox = e.target;
       if (e.target.value.trim() !== "") {
-        let toDoPriority = document.querySelector("select.priority").value;
+        let toDoPriority = document.querySelector("#newProjectForm select.priority").value;
         let toDoInputBoxText = toDoInputBox.value;
 
         toDoInputBox.value = "";
@@ -50,6 +50,8 @@ const toDoInputHandler = function (e) {
           <option value="low">Low</option>
         `;
 
+        toDoItemPriority.value = toDoPriority;
+
         deleteBtn.addEventListener("click", deleteToDo); 
         deleteBtn.tabIndex = 0;
         
@@ -58,6 +60,7 @@ const toDoInputHandler = function (e) {
         toDoItem.appendChild(deleteBtn);
 
         let createdToDo = createToDo(toDoInputBoxText, toDoPriority);
+        console.log(createdToDo);
         toDoItem.dataset.todoId = createdToDo.getID();
         toDoMap.set(createdToDo.getID(), createdToDo);
         toDoContainer.appendChild(toDoItem);
@@ -82,7 +85,7 @@ let resetModal = () => {
   document.querySelector("#description").value = "";
   document.querySelector("#dueDate").value = "";
   document.querySelector("#toDo").value = "";
-  toDoArray.length = 0;
+  toDoMap.clear();
   toDoContainer.innerHTML = ""; 
 }
 
@@ -109,9 +112,10 @@ const createProjectHandler = function (e) {
 
   if (checkForEmptyInputs(inputs)) {
     const projectItem = createProject(title, description, dueDateValue);
-    projectItem.toDoMap = 
+    projectItem.toDoMap = toDoMap;
     closeModal();
     resetModal();
+    renderProject(projectItem);
   }
 };
 
