@@ -1,6 +1,7 @@
 import {format, formatDistanceToNowStrict, parseISO} from "date-fns";
 import { createToDo, renderTodo } from './toDoManager.js';
 import { toZonedTime as utcToZonedTime } from 'date-fns-tz'; //
+import { msny } from "./masonryView.js";
 
 
 let allProjects = new Map();
@@ -46,135 +47,141 @@ let flattenDatetoLocalTimeZone = (date) => {
     return localDueDate;
 }
 
-function renderProject () {
-    container.text = "";
-    allProjects.forEach((projectItem) => {
-        const project = document.createElement("div");
-        project.classList.add("project");
-        project.dataset.projectid = projectItem.getID();
+function renderProject (projectItem) {
+    const project = document.createElement("div");
+    project.classList.add("project");
+    project.dataset.projectid = projectItem.getID();
 
-        const title = document.createElement("h2");
-        title.classList.add("title");
+    const title = document.createElement("h2");
+    title.classList.add("title");
 
-        const titleExpand = document.createElement("a");
-        titleExpand.href = "#";
-        titleExpand.textContent = projectItem.title;
-        title.appendChild(titleExpand);
-        titleExpand.contentEditable= "plaintext-only";
-        titleExpand.addEventListener("blur", e => {
-            if (e.target.textContent != projectItem.title) {
-                projectItem.updateTitle(e.target.textContent);
-                console.log(projectItem.title); 
+    const titleExpand = document.createElement("a");
+    titleExpand.href = "#";
+    titleExpand.textContent = projectItem.title;
+    title.appendChild(titleExpand);
+    titleExpand.contentEditable= "plaintext-only";
+    titleExpand.addEventListener("blur", e => {
+        if (e.target.textContent != projectItem.title) {
+            projectItem.updateTitle(e.target.textContent);
+            console.log(projectItem.title); 
+        }
+    })
+
+    const addToDoBtn = document.createElement("button");
+    addToDoBtn.className = "addToDoBtn";
+    addToDoBtn.title = "Add To-Do";
+    const addToDoBtnSymbol = document.createElement("i");
+    addToDoBtnSymbol.className = "bx bx-message-square-add";
+    addToDoBtn.appendChild(addToDoBtnSymbol);
+    title.appendChild(addToDoBtn);
+
+    const description = document.createElement("p");
+    description.classList.add("desc");
+    description.textContent = projectItem.description;
+    description.contentEditable= "plaintext-only";
+    description.addEventListener("blur", e => {
+            if (projectItem.description !== e.target.textContent) {
+                projectItem.updateDescription(e.target.textContent);
             }
         })
 
-        const addToDoBtn = document.createElement("button");
-        addToDoBtn.className = "addToDoBtn";
-        addToDoBtn.title = "Add To-Do";
-        const addToDoBtnSymbol = document.createElement("i");
-        addToDoBtnSymbol.className = "bx bx-message-square-add";
-        addToDoBtn.appendChild(addToDoBtnSymbol);
-        title.appendChild(addToDoBtn);
+    let today = new Date();
+    // must be in YYYY-MM-DD format for input type="date", this pads it if single digit
+    let todayMonth = String(today.getMonth() + 1).padStart(2, '0');
+    let todayDay = String(today.getDate()).padStart(2, '0');
+    let todayYear = today.getFullYear();
+    today = `${todayYear}-${todayMonth}-${todayDay}`;
 
-        const description = document.createElement("p");
-        description.classList.add("desc");
-        description.textContent = projectItem.description;
-        description.contentEditable= "plaintext-only";
-        description.addEventListener("blur", e => {
-                if (projectItem.description !== e.target.textContent) {
-                    projectItem.updateDescription(e.target.textContent);
-                }
-            })
-
-        let today = new Date();
-        // must be in YYYY-MM-DD format for input type="date", this pads it if single digit
-        let todayMonth = String(today.getMonth() + 1).padStart(2, '0');
-        let todayDay = String(today.getDate()).padStart(2, '0');
-        let todayYear = today.getFullYear();
-        today = `${todayYear}-${todayMonth}-${todayDay}`;
-
-        const dueDateContainer = document.createElement("div");
-        const dueDateText = document.createElement("div");
-        const dueDate = document.createElement("input");
-        dueDateContainer.className = "dueDate whitespace-pre-wrap";
-        dueDate.type = "date";
-        dueDate.min = today;
+    const dueDateContainer = document.createElement("div");
+    const dueDateText = document.createElement("div");
+    const dueDate = document.createElement("input");
+    dueDateContainer.className = "dueDate whitespace-pre-wrap";
+    dueDate.type = "date";
+    dueDate.min = today;
 
 
-        dueDateText.textContent = "Due Date: ";
-        dueDate.valueAsDate = flattenDatetoLocalTimeZone(projectItem.dueDate);
-        dueDate.addEventListener("blur", e => {
-            const newDate = e.target.value;
-            projectItem.updateDueDate(flattenDatetoLocalTimeZone(newDate));
-            console.log(projectItem.dueDate);
-        });
-        dueDateContainer.title = `in ${formatDistanceToNowStrict(projectItem.dueDate)}`;
-        dueDateContainer.appendChild(dueDateText);
-        dueDateContainer.appendChild(dueDate);
-
-
-        let addToDoField = document.createElement("input");
-        addToDoField.type = "text";
-        addToDoField.placeholder = "Press Enter to add";
-        addToDoField.className = "addToDoField";
-
-        let addToDoPriority = document.createElement("select");
-        addToDoPriority.className = "addToDoPriority addToDoField priority";
-        [
-            { value: "high", text: "High" },
-            { value: "medium", text: "Medium" },
-            { value: "low", text: "Low" }
-        ].forEach(opt => {
-            let option = document.createElement("option");
-            option.value = opt.value;
-            option.textContent = opt.text;
-            addToDoPriority.appendChild(option);
-        });
-
-        // default priority
-        addToDoPriority.value = "medium";
-
-        let addToDoWrapper = document.createElement("div");
-        addToDoWrapper.className = "addToDoWrapper";
-        addToDoWrapper.appendChild(addToDoField);
-        addToDoWrapper.appendChild(addToDoPriority);
-
-        project.appendChild(title);
-        project.appendChild(description);
-        project.appendChild(dueDateContainer);
-        project.appendChild(addToDoWrapper);
-
-        addToDoBtn.addEventListener("click", () => {
-            addToDoField.classList.toggle("visible");
-            addToDoPriority.classList.toggle("visible");
-            addToDoField.focus();
-        });
-
-        addToDoField.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                const value = addToDoField.value.trim();
-                const priority = addToDoPriority.value;
-                if (value.length === 0) return;
-                if (!projectItem.toDoMap) projectItem.toDoMap = new Map();
-                const newToDo = createToDo(value, priority);
-                projectItem.addToDo(newToDo);
-                addToDoField.value = "";
-
-                const newTodoContainer = renderTodo(projectItem);
-
-                const oldTodoContainer = project.querySelector('.todo-container');
-                if (oldTodoContainer) oldTodoContainer.remove();
-                project.appendChild(newTodoContainer);
-                addToDoField.focus();
-            }
-        });
-
-        const todoContainer = renderTodo(projectItem);
-        project.appendChild(todoContainer);
-
-        container.appendChild(project);
+    dueDateText.textContent = "Due Date: ";
+    dueDate.valueAsDate = flattenDatetoLocalTimeZone(projectItem.dueDate);
+    dueDate.addEventListener("blur", e => {
+        const newDate = e.target.value;
+        projectItem.updateDueDate(flattenDatetoLocalTimeZone(newDate));
+        console.log(projectItem.dueDate);
     });
+    dueDateContainer.title = `in ${formatDistanceToNowStrict(projectItem.dueDate)}`;
+    dueDateContainer.appendChild(dueDateText);
+    dueDateContainer.appendChild(dueDate);
+
+
+    let addToDoField = document.createElement("input");
+    addToDoField.type = "text";
+    addToDoField.placeholder = "Press Enter to add";
+    addToDoField.className = "addToDoField";
+
+    let addToDoPriority = document.createElement("select");
+    addToDoPriority.className = "addToDoPriority addToDoField priority";
+    [
+        { value: "high", text: "High" },
+        { value: "medium", text: "Medium" },
+        { value: "low", text: "Low" }
+    ].forEach(opt => {
+        let option = document.createElement("option");
+        option.value = opt.value;
+        option.textContent = opt.text;
+        addToDoPriority.appendChild(option);
+    });
+
+    // default priority
+    addToDoPriority.value = "medium";
+
+    let addToDoWrapper = document.createElement("div");
+    addToDoWrapper.className = "addToDoWrapper";
+    addToDoWrapper.appendChild(addToDoField);
+    addToDoWrapper.appendChild(addToDoPriority);
+
+    project.appendChild(title);
+    project.appendChild(description);
+    project.appendChild(dueDateContainer);
+    project.appendChild(addToDoWrapper);
+
+    addToDoBtn.addEventListener("click", () => {
+        addToDoField.classList.toggle("visible");
+        addToDoPriority.classList.toggle("visible");
+        addToDoField.focus();
+    });
+
+    addToDoField.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            const value = addToDoField.value.trim();
+            const priority = addToDoPriority.value;
+            if (value.length === 0) return;
+            if (!projectItem.toDoMap) projectItem.toDoMap = new Map();
+            const newToDo = createToDo(value, priority);
+            projectItem.addToDo(newToDo);
+            addToDoField.value = "";
+
+            const newTodoContainer = renderTodo(projectItem);
+
+            const oldTodoContainer = project.querySelector('.todo-container');
+            if (oldTodoContainer) oldTodoContainer.remove();
+            project.appendChild(newTodoContainer);
+            addToDoField.focus();
+        }
+    });
+
+    const todoContainer = renderTodo(projectItem);
+    project.appendChild(todoContainer);
+
+    container.appendChild(project);
+    msny.appended(project);
+    msny.layout();
 }
+
+let renderAllProjects = () => {
+    allProjects.forEach((projectItem => {
+        renderProject(projectItem);
+    }))
+}
+
 
 const project1 = createProject(
     "Learn JavaScript",
@@ -200,11 +207,12 @@ const project3 = createProject(
     new Date("2025-10-01")
 );
 
-renderProject();
+renderAllProjects();
 
 console.log(allProjects);
 
 export {
     allProjects as allProjects,
-    createProject as createProject
+    createProject as createProject,
+    renderProject
 };

@@ -10,7 +10,6 @@ let msny = new Masonry(container, {
     fitWidth: true, 
     transitionDuration: '0.2s',
     horizontalOrder: true,
-
 });
 
 msny.layout();
@@ -26,3 +25,5 @@ function observeProjects() {
 }
 
 observeProjects();
+
+export {msny};
