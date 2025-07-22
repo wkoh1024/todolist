@@ -114,8 +114,8 @@ const createProjectHandler = function (e) {
     const projectItem = createProject(title, description, dueDateValue);
     projectItem.toDoMap = toDoMap;
     closeModal();
-    resetModal();
     renderProject(projectItem);
+    resetModal();
   }
 };
 

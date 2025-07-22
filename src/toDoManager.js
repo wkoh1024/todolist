@@ -29,7 +29,7 @@ function deleteToDo (e) {
     // delete from DOM
     let toDoItem = e.target.parentNode;
     let toDoItemID = toDoItem.dataset.todoid;
-    let projectID = toDoItem.parentNode.parentNode.dataset.projectid;
+    let projectID = e.target.closest('.project').dataset.projectid;
 
     toDoItem.remove();
     
@@ -45,72 +45,64 @@ function deleteBtnKeyboardInteraction (e) {
   }
 }
 
-function renderTodo(projectItem) {
-    const todoContainer = document.createElement('div');
-    todoContainer.classList.add('todo-container');
+function renderTodo(todoitem) {
+    let deleteBtn = document.createElement("img");
+    deleteBtn.src = trashIcon;
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.addEventListener("click", deleteToDo);
+    deleteBtn.tabIndex = 0;
+    deleteBtn.addEventListener('keydown', deleteBtnKeyboardInteraction);
+
+    let todoElement = document.createElement("div");
+    todoElement.classList.add("todo-item");
+    todoElement.dataset.todoid = todoitem.getID();
     
-    if (!(projectItem.toDoMap === undefined)) {
-        projectItem.toDoMap.forEach((todoitem) => {
-            let deleteBtn = document.createElement("img");
-            deleteBtn.src = trashIcon;
-            deleteBtn.classList.add("delete-btn");
-            deleteBtn.addEventListener("click", deleteToDo);
-            deleteBtn.tabIndex = 0;
-            deleteBtn.addEventListener('keydown', deleteBtnKeyboardInteraction);
+    let description = document.createElement("span");
+    description.textContent = todoitem.description;
+    description.contentEditable= "plaintext-only";
+    description.addEventListener("blur", e => {
+        if (todoitem.description !== e.target.textContent) {
+            todoitem.updateDescription(e.target.textContent);
+        }
+    })
+    
+    
+    let priorityBadge = document.createElement("select");
+    let highPriority = document.createElement("option");
+    highPriority.value = "high";
+    highPriority.textContent = "High";
 
-            let todoElement = document.createElement("div");
-            todoElement.classList.add("todo-item");
-            todoElement.dataset.todoid = todoitem.getID();
-            
-            let description = document.createElement("span");
-            description.textContent = todoitem.description;
-            description.contentEditable= "plaintext-only";
-            description.addEventListener("blur", e => {
-                if (todoitem.description !== e.target.textContent) {
-                    todoitem.updateDescription(e.target.textContent);
-                }
-            })
-            
-            
-            let priorityBadge = document.createElement("select");
-            let highPriority = document.createElement("option");
-            highPriority.value = "high";
-            highPriority.textContent = "High";
+    let mediumPriority = document.createElement("option");
+    mediumPriority.value = "medium";
+    mediumPriority.textContent = "Medium";
 
-            let mediumPriority = document.createElement("option");
-            mediumPriority.value = "medium";
-            mediumPriority.textContent = "Medium";
+    let lowPriority = document.createElement("option");
+    lowPriority.value = "low";
+    lowPriority.textContent = "Low";
 
-            let lowPriority = document.createElement("option");
-            lowPriority.value = "low";
-            lowPriority.textContent = "Low";
+    priorityBadge.addEventListener("change", e => {
+        todoitem.updatePriority(e.target.value);
+    });
 
-            priorityBadge.addEventListener("change", e => {
-                todoitem.updatePriority(e.target.value);
-            });
+    priorityBadge.appendChild(highPriority);
+    priorityBadge.appendChild(mediumPriority);
+    priorityBadge.appendChild(lowPriority);
 
-            priorityBadge.appendChild(highPriority);
-            priorityBadge.appendChild(mediumPriority);
-            priorityBadge.appendChild(lowPriority);
-
-            priorityBadge.value = todoitem.priority;
-            
-            priorityBadge.classList.add("priority");
-            
-            let checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.checked = todoitem.completed;
-            checkbox.addEventListener("change", () => todoitem.toggle());
-            
-            todoElement.appendChild(checkbox);
-            todoElement.appendChild(description);
-            todoElement.appendChild(priorityBadge);
-            todoElement.appendChild(deleteBtn);
-            
-            todoContainer.appendChild(todoElement);
-        });
-    }
-    return todoContainer;
+    priorityBadge.value = todoitem.priority;
+    
+    priorityBadge.classList.add("priority");
+    
+    let checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = todoitem.completed;
+    checkbox.addEventListener("change", () => todoitem.toggle());
+    
+    todoElement.appendChild(checkbox);
+    todoElement.appendChild(description);
+    todoElement.appendChild(priorityBadge);
+    todoElement.appendChild(deleteBtn);
+    
+    return todoElement;
 }
 
 export {

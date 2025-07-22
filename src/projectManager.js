@@ -159,16 +159,19 @@ function renderProject (projectItem) {
             projectItem.addToDo(newToDo);
             addToDoField.value = "";
 
-            const newTodoContainer = renderTodo(projectItem);
-
-            const oldTodoContainer = project.querySelector('.todo-container');
-            if (oldTodoContainer) oldTodoContainer.remove();
-            project.appendChild(newTodoContainer);
+            const todoContainer = project.querySelector('.todo-container');
+            const newTodoElement = renderTodo(newToDo);
+            todoContainer.appendChild(newTodoElement);
             addToDoField.focus();
         }
     });
 
-    const todoContainer = renderTodo(projectItem);
+    const todoContainer = document.createElement('div');
+    todoContainer.classList.add('todo-container');
+    projectItem.toDoMap.forEach(todoItem => {
+        const todoElement = renderTodo(todoItem);
+        todoContainer.appendChild(todoElement);
+    });
     project.appendChild(todoContainer);
 
     container.appendChild(project);
