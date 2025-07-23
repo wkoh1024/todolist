@@ -67,13 +67,15 @@ function renderProject (projectItem) {
         }
     })
 
-    const addToDoBtn = document.createElement("button");
-    addToDoBtn.className = "addToDoBtn";
-    addToDoBtn.title = "Add To-Do";
-    const addToDoBtnSymbol = document.createElement("i");
-    addToDoBtnSymbol.className = "bx bx-message-square-add";
-    addToDoBtn.appendChild(addToDoBtnSymbol);
-    title.appendChild(addToDoBtn);
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "X";
+    deleteBtn.classList.add("delete-project-btn");
+    deleteBtn.addEventListener("click", () => {
+        allProjects.delete(projectItem.getID());
+        msny.remove(project);
+        msny.layout();
+    });
+    title.appendChild(deleteBtn);
 
     const description = document.createElement("p");
     description.classList.add("desc");
@@ -105,12 +107,16 @@ function renderProject (projectItem) {
     dueDate.addEventListener("blur", e => {
         const newDate = e.target.value;
         projectItem.updateDueDate(flattenDatetoLocalTimeZone(newDate));
+        dueDateContainer.title = `in ${formatDistanceToNowStrict(projectItem.dueDate)}`;
         console.log(projectItem.dueDate);
     });
     dueDateContainer.title = `in ${formatDistanceToNowStrict(projectItem.dueDate)}`;
     dueDateContainer.appendChild(dueDateText);
     dueDateContainer.appendChild(dueDate);
 
+    const addToDoBtn = document.createElement("button");
+    addToDoBtn.className = "addToDoBtn";
+    addToDoBtn.textContent = "Add To-Do";
 
     let addToDoField = document.createElement("input");
     addToDoField.type = "text";
@@ -141,9 +147,11 @@ function renderProject (projectItem) {
     project.appendChild(title);
     project.appendChild(description);
     project.appendChild(dueDateContainer);
+    project.appendChild(addToDoBtn);
     project.appendChild(addToDoWrapper);
 
     addToDoBtn.addEventListener("click", () => {
+        addToDoWrapper.classList.toggle("visible");
         addToDoField.classList.toggle("visible");
         addToDoPriority.classList.toggle("visible");
         addToDoField.focus();
