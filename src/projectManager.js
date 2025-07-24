@@ -52,6 +52,37 @@ function renderProject (projectItem) {
     project.classList.add("project");
     project.dataset.projectid = projectItem.getID();
 
+    project.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-project-btn")) return;
+        if (project.classList.contains("focused")) return;
+
+        project.classList.add("focused");
+        const overlay = document.createElement("div");
+        overlay.classList.add("overlay");
+        document.body.appendChild(overlay);
+
+        let closeFocusedView = () => {
+            project.classList.remove("focused");
+            overlay.remove();
+            document.removeEventListener("keydown", handleEsc);
+            project.addEventListener("transitionend", () => {
+                msny.layout();
+            }, { once: true });
+        }
+
+        let handleEsc = (e) => {
+            if (e.key === "Escape") {
+                closeFocusedView();
+            }
+        }
+
+        overlay.addEventListener("click", () => {
+            closeFocusedView();
+        });
+
+        document.addEventListener("keydown", handleEsc);
+    });
+
     const title = document.createElement("h2");
     title.classList.add("title");
 

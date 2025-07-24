@@ -87,6 +87,8 @@ body {
   height: auto;
   max-width: 25rem;
   margin-bottom: 20px;
+  background-color: #F4F3EE;
+  transition: all 0.3s ease-in-out;
 }
 
 #newProjectForm > div {
@@ -100,7 +102,18 @@ body {
   gap: .5rem;
 }
 
+.project.focused {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+    width: 80%;
+    max-width: 40rem;
+}
+
 .overlay {
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
@@ -109,6 +122,7 @@ body {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(3px);
+  z-index: 1000;
 }
 
 .modal {
