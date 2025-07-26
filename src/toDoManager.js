@@ -1,7 +1,7 @@
 import trashIcon from "./trash icon.svg"
 import { allProjects } from "./projectManager";
 
-function createToDo (description, priority) {
+function createToDo (title, description, priority, dueDate) {
     let uuid = self.crypto.randomUUID();
     const todo = {
         description, priority,completed: false,
@@ -57,6 +57,15 @@ function renderTodo(todoitem) {
     todoElement.classList.add("todo-item");
     todoElement.dataset.todoid = todoitem.getID();
     
+    let title = document.createElement("span");
+    title.textContent = todoitem.title;
+    title.contentEditable= "plaintext-only";
+    title.addEventListener("blur", e => {
+        if (todoitem.title !== e.target.textContent) {
+            todoitem.updateTitle(e.target.textContent);
+        }
+    })
+
     let description = document.createElement("span");
     description.textContent = todoitem.description;
     description.contentEditable= "plaintext-only";
@@ -66,7 +75,14 @@ function renderTodo(todoitem) {
         }
     })
     
-    
+    let dueDate = document.createElement("input");
+    dueDate.type = "date";
+    dueDate.valueAsDate = todoitem.dueDate;
+    dueDate.addEventListener("blur", e => {
+        const newDate = e.target.value;
+        todoitem.updateDueDate(newDate);
+    });
+
     let priorityBadge = document.createElement("select");
     let highPriority = document.createElement("option");
     highPriority.value = "high";
@@ -98,7 +114,9 @@ function renderTodo(todoitem) {
     checkbox.addEventListener("change", () => todoitem.toggle());
     
     todoElement.appendChild(checkbox);
+    todoElement.appendChild(title);
     todoElement.appendChild(description);
+    todoElement.appendChild(dueDate);
     todoElement.appendChild(priorityBadge);
     todoElement.appendChild(deleteBtn);
     
