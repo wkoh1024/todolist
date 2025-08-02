@@ -71,6 +71,7 @@ function renderTodo(todoitem) {
     
     let title = document.createElement("span");
     title.textContent = todoitem.title;
+    title.classList.add("todo-title");
     title.contentEditable= "plaintext-only";
     title.addEventListener("blur", e => {
         if (todoitem.title !== e.target.textContent) {
@@ -78,14 +79,20 @@ function renderTodo(todoitem) {
         }
     })
 
-    let description = document.createElement("span");
-    description.textContent = todoitem.description;
-    description.contentEditable= "plaintext-only";
+    let description = document.createElement("textarea");
+    description.placeholder = "Click to add a description";
+    description.classList.add("todo-description");
+    description.value = todoitem.description;
     description.addEventListener("blur", e => {
-        if (todoitem.description !== e.target.textContent) {
-            todoitem.updateDescription(e.target.textContent);
+        if (todoitem.description !== e.target.value) {
+            todoitem.updateDescription(e.target.value);
         }
-    })
+    });
+
+    description.addEventListener("input", () => {
+        description.style.height = "auto";
+        description.style.height = description.scrollHeight + "px";
+    });
 
     let titleAndDesc = document.createElement("div");
     titleAndDesc.appendChild(title);

@@ -205,7 +205,6 @@ dialog::backdrop {
   display: flex;
   align-items: center;
   padding-right: 1rem;
-  padding-left: .2rem;
 }
 
 .todo-item input[type="checkbox"] {
@@ -247,6 +246,7 @@ h2.title {
 
 .title a {
   margin-right: 1rem;
+  font-weight: bolder;
 }
 
 .bx-message-square-add:hover {
@@ -321,10 +321,43 @@ p.desc {
   margin-top: 1rem;
 }
 
-/* text section in to-do's */
+/* priority and date section in to-do's */
 div.todo-container > div > div:nth-child(3) {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
 }
+
+div.todo-container > div > div:nth-child(3) > input[type="date"] {
+  text-align: center;
+}
+
+div.todo-container > div.todo-item > div:nth-child(2) {
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+div.todo-item > div:nth-child(2) > span:nth-child(1) {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.todo-description {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  outline: none;
+  padding: 0;
+  width: 100%;
+  resize: none;
+}
+
+textarea.todo-description {
+  font-size: .8rem;
+}
+
+
