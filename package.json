@@ -9,6 +9,7 @@
     "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
+    "@google/gemini-cli": "github:google-gemini/gemini-cli",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0"
   }

@@ -184,13 +184,21 @@ let renderAllProjects = () => {
 }
 
 
-const project1 = createProject("Learn JavaScript");
+const project1 = createProject("Frontend Development");
 
-let toDo1 = createToDo("Research React", "hihi", "high", new Date("2025-10-01"))
+let toDo1 = createToDo("Learn React Hooks", "Study useState, useEffect, and useContext for managing component state and side effects.", "high", new Date("2025-08-15"))
 project1.addToDo(toDo1);
 
-let toDo2 = createToDo("Practice TypeScript", "hihi2", "medium", new Date("2025-10-02"));
+let toDo2 = createToDo("Master CSS Grid", "Complete a few layouts using CSS Grid to understand its power.", "medium", new Date("2025-08-20"));
 project1.addToDo(toDo2);
+
+let toDo3 = createToDo("Build a small project with Webpack", "Set up a basic project with Webpack to understand module bundling.", "low", new Date("2025-09-01"));
+project1.addToDo(toDo3);
+
+
+const project2 = createProject("Personal");
+let toDo4 = createToDo("Go grocery shopping", "Milk, bread, eggs, and cheese.", "medium", new Date("2025-08-02"));
+project2.addToDo(toDo4);
 
 renderAllProjects();
 

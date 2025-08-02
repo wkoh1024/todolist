@@ -4,7 +4,11 @@ import { allProjects } from "./projectManager";
 function createToDo (title, description, priority, dueDate) {
     let uuid = self.crypto.randomUUID();
     const todo = {
-        description, priority,completed: false,
+        title,
+        description,
+        priority,
+        dueDate,
+        completed: false,
 
         getID() {
             return uuid;
@@ -14,12 +18,20 @@ function createToDo (title, description, priority, dueDate) {
             this.completed = !this.completed;
         },
 
+        updateTitle(newTitle) {
+            this.title = newTitle;
+        },
+
         updateDescription(newDescription) {
             this.description = newDescription;
         },
 
         updatePriority(newPriority) {
             this.priority = newPriority
+        },
+
+        updateDueDate(newDueDate) {
+            this.dueDate = newDueDate;
         }
     };
     return todo;
@@ -74,6 +86,10 @@ function renderTodo(todoitem) {
             todoitem.updateDescription(e.target.textContent);
         }
     })
+
+    let titleAndDesc = document.createElement("div");
+    titleAndDesc.appendChild(title);
+    titleAndDesc.appendChild(description); 
     
     let dueDate = document.createElement("input");
     dueDate.type = "date";
@@ -84,6 +100,11 @@ function renderTodo(todoitem) {
     });
 
     let priorityBadge = document.createElement("select");
+
+    let dueDateAndPriority = document.createElement("div");
+    dueDateAndPriority.appendChild(dueDate);
+    dueDateAndPriority.appendChild(priorityBadge);
+
     let highPriority = document.createElement("option");
     highPriority.value = "high";
     highPriority.textContent = "High";
@@ -114,10 +135,8 @@ function renderTodo(todoitem) {
     checkbox.addEventListener("change", () => todoitem.toggle());
     
     todoElement.appendChild(checkbox);
-    todoElement.appendChild(title);
-    todoElement.appendChild(description);
-    todoElement.appendChild(dueDate);
-    todoElement.appendChild(priorityBadge);
+    todoElement.appendChild(titleAndDesc);
+    todoElement.appendChild(dueDateAndPriority);
     todoElement.appendChild(deleteBtn);
     
     return todoElement;
