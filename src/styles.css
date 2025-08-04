@@ -281,6 +281,22 @@ h2.title {
   display: inline-block;
 }
 
+.addToDoWrapper textarea.addToDoField {
+    display: none;
+}
+
+.addToDoWrapper.visible textarea.addToDoField {
+    display: inline-block;
+}
+
+.addToDoWrapper input[type="date"].addToDoField {
+    display: none;
+}
+
+.addToDoWrapper.visible input[type="date"].addToDoField {
+    display: inline-block;
+}
+
 .priority {
   padding: 0.2rem 0.6rem;
   border-radius: 0.5rem;
@@ -360,4 +376,7 @@ textarea.todo-description {
   font-size: .8rem;
 }
 
-
+#container > div.project > div.todo-container > div > div > textarea {
+  display: flex;
+  align-items: center;
+}

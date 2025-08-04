@@ -83,17 +83,27 @@ function renderTodo(todoitem) {
     description.placeholder = "Click to add a description";
     description.classList.add("todo-description");
     description.value = todoitem.description;
+    description.rows = 1;
+    
+    const autoResize = (el) => {
+        el.style.height = 'auto';
+        const computedStyle = window.getComputedStyle(el);
+        const paddingTop = parseFloat(computedStyle.paddingTop);
+        const paddingBottom = parseFloat(computedStyle.paddingBottom);
+        el.style.height = (el.scrollHeight - paddingTop - paddingBottom) + 'px';
+    };
+
+    description.addEventListener("input", () => autoResize(description));
+
     description.addEventListener("blur", e => {
         if (todoitem.description !== e.target.value) {
             todoitem.updateDescription(e.target.value);
-            console.log(todoitem.description);
         }
     });
 
-    description.addEventListener("input", () => {
-        description.style.height = "auto";
-        description.style.height = description.scrollHeight + "px";
-    });
+    setTimeout(() => {
+        autoResize(description);
+    }, 0);
 
     let titleAndDesc = document.createElement("div");
     titleAndDesc.appendChild(title);

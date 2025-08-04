@@ -85,6 +85,16 @@ function renderProject (projectItem) {
     addToDoField.placeholder = "Press Enter to add";
     addToDoField.className = "addToDoField";
 
+    let addToDoDescription = document.createElement("textarea");
+    addToDoDescription.placeholder = "Description";
+    addToDoDescription.className = "addToDoField";
+    addToDoDescription.rows = 1;
+
+    let addToDoDate = document.createElement("input");
+    addToDoDate.type = "date";
+    addToDoDate.className = "addToDoField";
+    addToDoDate.valueAsDate = new Date();
+
 
     let addToDoPriority = document.createElement("select");
     addToDoPriority.className = "addToDoPriority addToDoField priority";
@@ -105,6 +115,8 @@ function renderProject (projectItem) {
     let addToDoWrapper = document.createElement("div");
     addToDoWrapper.className = "addToDoWrapper";
     addToDoWrapper.appendChild(addToDoField);
+    addToDoWrapper.appendChild(addToDoDescription);
+    addToDoWrapper.appendChild(addToDoDate);
     addToDoWrapper.appendChild(addToDoPriority);
 
     project.appendChild(title);
@@ -114,6 +126,8 @@ function renderProject (projectItem) {
     addToDoBtn.addEventListener("click", () => {
         addToDoWrapper.classList.toggle("visible");
         addToDoField.classList.toggle("visible");
+        addToDoDescription.classList.toggle("visible");
+        addToDoDate.classList.toggle("visible");
         addToDoPriority.classList.toggle("visible");
         addToDoField.focus();
     });
@@ -122,13 +136,14 @@ function renderProject (projectItem) {
         if (e.key === "Enter") {
             const title = addToDoField.value.trim();
             const priority = addToDoPriority.value;
-            const description = "";
-            const dueDate = new Date();
+            const description = addToDoDescription.value.trim();
+            const dueDate = addToDoDate.valueAsDate;
             if (title.length === 0) return;
             if (!projectItem.toDoMap) projectItem.toDoMap = new Map();
             const newToDo = createToDo(title, description, priority, dueDate);
             projectItem.addToDo(newToDo);
             addToDoField.value = "";
+            addToDoDescription.value = "";
 
             const todoContainer = project.querySelector('.todo-container');
             const newTodoElement = renderTodo(newToDo);
