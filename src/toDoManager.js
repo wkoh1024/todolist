@@ -86,6 +86,7 @@ function renderTodo(todoitem) {
     description.addEventListener("blur", e => {
         if (todoitem.description !== e.target.value) {
             todoitem.updateDescription(e.target.value);
+            console.log(todoitem.description);
         }
     });
 

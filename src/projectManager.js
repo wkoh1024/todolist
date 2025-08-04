@@ -60,9 +60,16 @@ function renderProject (projectItem) {
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "X";
     deleteBtn.classList.add("delete-project-btn");
-    deleteBtn.addEventListener("click", () => {
+    deleteBtn.addEventListener("click", (e) => {
+        const projectElement = e.target.closest(".project");
+        if (projectElement.classList.contains("focused")) {
+            const overlay = document.querySelector(".overlay");
+            if (overlay) {
+                overlay.remove();
+            }
+        }
         allProjects.delete(projectItem.getID());
-        
+        projectElement.remove();
     });
     title.appendChild(deleteBtn);
 
