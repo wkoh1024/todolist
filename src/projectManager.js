@@ -78,17 +78,16 @@ function renderProject (projectItem) {
     const addToDoBtn = document.createElement("button");
     addToDoBtn.className = "addToDoBtn";
     addToDoBtn.textContent = "Add To-Do";
-    addToDoBtn.disabled = true;
 
     let addToDoField = document.createElement("input");
     addToDoField.type = "text";
-    addToDoField.placeholder = "Press Enter to add";
+    addToDoField.placeholder = "Title";
     addToDoField.className = "addToDoField";
 
-    let addToDoDescription = document.createElement("textarea");
+    let addToDoDescription = document.createElement("input");
+    addToDoDescription.type = "text";
     addToDoDescription.placeholder = "Description";
     addToDoDescription.className = "addToDoField";
-    addToDoDescription.rows = 1;
 
     let addToDoDate = document.createElement("input");
     addToDoDate.type = "date";
@@ -109,8 +108,12 @@ function renderProject (projectItem) {
         addToDoPriority.appendChild(option);
     });
 
-    // default priority
+        // default priority
     addToDoPriority.value = "medium";
+
+    let addToDoSubmit = document.createElement("button");
+    addToDoSubmit.textContent = "Submit";
+    addToDoSubmit.className = "addToDoSubmit";
 
     let addToDoWrapper = document.createElement("div");
     addToDoWrapper.className = "addToDoWrapper";
@@ -118,6 +121,7 @@ function renderProject (projectItem) {
     addToDoWrapper.appendChild(addToDoDescription);
     addToDoWrapper.appendChild(addToDoDate);
     addToDoWrapper.appendChild(addToDoPriority);
+    addToDoWrapper.appendChild(addToDoSubmit);
 
     project.appendChild(title);
     project.appendChild(addToDoBtn);
@@ -129,27 +133,42 @@ function renderProject (projectItem) {
         addToDoDescription.classList.toggle("visible");
         addToDoDate.classList.toggle("visible");
         addToDoPriority.classList.toggle("visible");
+        addToDoSubmit.classList.toggle("visible");
         addToDoField.focus();
     });
 
+    const handleAddToDo = () => {
+        const title = addToDoField.value.trim();
+        const priority = addToDoPriority.value;
+        const description = addToDoDescription.value.trim();
+        const dueDate = addToDoDate.valueAsDate;
+        if (title.length === 0) return;
+        if (!projectItem.toDoMap) projectItem.toDoMap = new Map();
+        const newToDo = createToDo(title, description, priority, dueDate);
+        projectItem.addToDo(newToDo);
+        addToDoField.value = "";
+        addToDoDescription.value = "";
+
+        const todoContainer = project.querySelector('.todo-container');
+        const newTodoElement = renderTodo(newToDo);
+        todoContainer.appendChild(newTodoElement);
+        addToDoField.focus();
+    };
+
     addToDoField.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-            const title = addToDoField.value.trim();
-            const priority = addToDoPriority.value;
-            const description = addToDoDescription.value.trim();
-            const dueDate = addToDoDate.valueAsDate;
-            if (title.length === 0) return;
-            if (!projectItem.toDoMap) projectItem.toDoMap = new Map();
-            const newToDo = createToDo(title, description, priority, dueDate);
-            projectItem.addToDo(newToDo);
-            addToDoField.value = "";
-            addToDoDescription.value = "";
-
-            const todoContainer = project.querySelector('.todo-container');
-            const newTodoElement = renderTodo(newToDo);
-            todoContainer.appendChild(newTodoElement);
-            addToDoField.focus();
+            handleAddToDo();
         }
+    });
+
+    addToDoDescription.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            handleAddToDo();
+        }
+    });
+
+    addToDoSubmit.addEventListener("click", () => {
+        handleAddToDo();
     });
 
     const todoContainer = document.createElement('div');
@@ -167,8 +186,6 @@ function renderProject (projectItem) {
 
         project.classList.add("focused");
         titleExpand.contentEditable= "plaintext-only";
-        
-        addToDoBtn.disabled = false;
 
         const overlay = document.createElement("div");
         overlay.classList.add("overlay");
@@ -178,7 +195,6 @@ function renderProject (projectItem) {
             project.classList.remove("focused");
             titleExpand.contentEditable= "false";
             
-            addToDoBtn.disabled = true;
             overlay.remove();
             document.removeEventListener("keydown", handleEsc);
         }

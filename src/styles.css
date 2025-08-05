@@ -277,8 +277,13 @@ h2.title {
 }
 
 .addToDoField.visible,
-.addToDoPriority.visible {
+.addToDoPriority.visible,
+.addToDoSubmit.visible {
   display: inline-block;
+}
+
+.addToDoSubmit {
+    display: none;
 }
 
 .addToDoWrapper textarea.addToDoField {
