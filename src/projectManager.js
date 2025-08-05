@@ -83,6 +83,7 @@ function renderProject (projectItem) {
     addToDoField.type = "text";
     addToDoField.placeholder = "Title";
     addToDoField.className = "addToDoField";
+    addToDoField.required = true;
 
     let addToDoDescription = document.createElement("input");
     addToDoDescription.type = "text";
@@ -112,23 +113,24 @@ function renderProject (projectItem) {
     addToDoPriority.value = "medium";
 
     let addToDoSubmit = document.createElement("button");
+    addToDoSubmit.type = "submit";
     addToDoSubmit.textContent = "Submit";
     addToDoSubmit.className = "addToDoSubmit";
 
-    let addToDoWrapper = document.createElement("div");
-    addToDoWrapper.className = "addToDoWrapper";
-    addToDoWrapper.appendChild(addToDoField);
-    addToDoWrapper.appendChild(addToDoDescription);
-    addToDoWrapper.appendChild(addToDoDate);
-    addToDoWrapper.appendChild(addToDoPriority);
-    addToDoWrapper.appendChild(addToDoSubmit);
+    let addToDoForm = document.createElement("form");
+    addToDoForm.className = "addToDoWrapper";
+    addToDoForm.appendChild(addToDoField);
+    addToDoForm.appendChild(addToDoDescription);
+    addToDoForm.appendChild(addToDoDate);
+    addToDoForm.appendChild(addToDoPriority);
+    addToDoForm.appendChild(addToDoSubmit);
 
     project.appendChild(title);
     project.appendChild(addToDoBtn);
-    project.appendChild(addToDoWrapper);
+    project.appendChild(addToDoForm);
 
     addToDoBtn.addEventListener("click", () => {
-        addToDoWrapper.classList.toggle("visible");
+        addToDoForm.classList.toggle("visible");
         addToDoField.classList.toggle("visible");
         addToDoDescription.classList.toggle("visible");
         addToDoDate.classList.toggle("visible");
@@ -137,12 +139,12 @@ function renderProject (projectItem) {
         addToDoField.focus();
     });
 
-    const handleAddToDo = () => {
+    const handleAddToDo = (e) => {
+        e.preventDefault();
         const title = addToDoField.value.trim();
         const priority = addToDoPriority.value;
         const description = addToDoDescription.value.trim();
         const dueDate = addToDoDate.valueAsDate;
-        if (title.length === 0) return;
         if (!projectItem.toDoMap) projectItem.toDoMap = new Map();
         const newToDo = createToDo(title, description, priority, dueDate);
         projectItem.addToDo(newToDo);
@@ -155,21 +157,7 @@ function renderProject (projectItem) {
         addToDoField.focus();
     };
 
-    addToDoField.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            handleAddToDo();
-        }
-    });
-
-    addToDoDescription.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            handleAddToDo();
-        }
-    });
-
-    addToDoSubmit.addEventListener("click", () => {
-        handleAddToDo();
-    });
+    addToDoForm.addEventListener("submit", handleAddToDo);
 
     const todoContainer = document.createElement('div');
     todoContainer.classList.add('todo-container');

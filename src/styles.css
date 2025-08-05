@@ -83,7 +83,8 @@ body {
 
 .project {
   padding: 1.3rem;
-  border: 2px solid red;
+  border: 2px solid #463F3A;
+  border-radius: 1rem;
   height: auto;
   margin-bottom: 20px;
   background-color: #F4F3EE;
@@ -125,6 +126,7 @@ body {
 
 .modal {
   background-color: #F4F3EE;
+  border-radius: 1rem;
   padding: 1rem;
   width: 30%;
 }
@@ -256,6 +258,7 @@ h2.title {
 .addToDoWrapper {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
 }
 
@@ -265,7 +268,6 @@ h2.title {
 
 .addToDoField {
   display: none;
-  margin-left: 0.5rem;
   padding: 0.3rem 0.6rem;
   border-radius: 0.5rem;
   border: 1px solid #ccc;
@@ -338,10 +340,6 @@ p.desc {
   align-items: center;
 }
 
-.addToDoBtn {
-  margin-top: 1rem;
-}
-
 /* priority and date section in to-do's */
 div.todo-container > div > div:nth-child(3) {
   display: flex;
@@ -384,4 +382,11 @@ textarea.todo-description {
 #container > div.project > div.todo-container > div > div > textarea {
   display: flex;
   align-items: center;
+}
+
+.addToDoBtn, .addToDoSubmit{
+  background-color: #463F3A;
+  color: #F4F3EE;
+  padding: 1%;
+  border-radius: 1rem;
 }
