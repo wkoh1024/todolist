@@ -7,6 +7,29 @@ let allProjects = new Map();
 let container = document.querySelector("#container");
 
 
+function storageAvailable(type) {
+  let storage;
+  try {
+    storage = window[type];
+    const x = "__storage_test__";
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    return true;
+  } catch (e) {
+    return (
+      e instanceof DOMException &&
+      e.name === "QuotaExceededError" &&
+      // acknowledge QuotaExceededError only if there's something already stored
+      storage &&
+      storage.length !== 0
+    );
+  }
+}
+if (storageAvailable("localStorage")) {
+} else {
+}
+
+
 function createProject (title) {
     let uuid = self.crypto.randomUUID();
     const project = {
@@ -37,7 +60,7 @@ let flattenDatetoLocalTimeZone = (date) => {
     return localDueDate;
 }
 
-function renderProject (projectItem) {
+function renderProject (projectItem, firstIter) {
     const project = document.createElement("div");
     project.classList.add("project");
     project.dataset.projectid = projectItem.getID();
@@ -201,30 +224,23 @@ function renderProject (projectItem) {
     });
 
     container.appendChild(project);
+    if (firstIter) {
+        project.click();
+    }
 }
 
 let renderAllProjects = () => {
+    let firstIter = true;
     allProjects.forEach((projectItem => {
-        renderProject(projectItem);
+        (firstIter) ? (renderProject(projectItem, firstIter), firstIter = false) : renderProject(projectItem);
     }))
 }
 
 
-const project1 = createProject("Frontend Development");
+const defaultProject = createProject("First project");
 
-let toDo1 = createToDo("Learn React Hooks", "Study useState, useEffect, and useContext for managing component state and side effects.", "high", new Date("2025-08-15"))
-project1.addToDo(toDo1);
-
-let toDo2 = createToDo("Master CSS Grid", "Complete a few layouts using CSS Grid to understand its power.", "medium", new Date("2025-08-20"));
-project1.addToDo(toDo2);
-
-let toDo3 = createToDo("Build a small project with Webpack", "Set up a basic project with Webpack to understand module bundling.", "low", new Date("2025-09-01"));
-project1.addToDo(toDo3);
-
-
-const project2 = createProject("Personal");
-let toDo4 = createToDo("Go grocery shopping", "Milk, bread, eggs, and cheese.", "medium", new Date("2025-08-02"));
-project2.addToDo(toDo4);
+let toDo1 = createToDo("First to do", "Wonder what this is going to be about", "high", new Date());
+defaultProject.addToDo(toDo1);
 
 renderAllProjects();
 
