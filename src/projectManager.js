@@ -1,53 +1,143 @@
 import {format, formatDistanceToNowStrict, parseISO} from "date-fns";
 import { createToDo, renderTodo } from './toDoManager.js';
-import { toZonedTime as utcToZonedTime } from 'date-fns-tz'; //
+import { toZonedTime as utcToZonedTime } from 'date-fns-tz';
 
-
-let allProjects = new Map();
 let container = document.querySelector("#container");
 
+const mapProxyHandler = {
+    get(target, property, receiver) {
+        const originalMethod = target[property];
 
-function storageAvailable(type) {
-  let storage;
-  try {
-    storage = window[type];
-    const x = "__storage_test__";
-    storage.setItem(x, x);
-    storage.removeItem(x);
-    return true;
-  } catch (e) {
-    return (
-      e instanceof DOMException &&
-      e.name === "QuotaExceededError" &&
-      // acknowledge QuotaExceededError only if there's something already stored
-      storage &&
-      storage.length !== 0
-    );
-  }
-}
-if (storageAvailable("localStorage")) {
-} else {
+        if (['set', 'delete', 'clear'].includes(property)) {
+            return function(...args) {
+                originalMethod.apply(target, args);
+                saveProjects();
+            };
+        }
+
+        if (typeof originalMethod === 'function') {
+            return originalMethod.bind(target);
+        }
+        return originalMethod;
+    }
+};
+
+let projectsStore = new Map();
+let allProjects = new Proxy(projectsStore, mapProxyHandler);
+
+function replacer(key, value) {
+    if(value instanceof Map) {
+        return { __type: 'Map', value: Array.from(value.entries()) };
+    }
+    return value;
 }
 
+function reviver(key, value) {
+    if(typeof value === 'object' && value !== null) {
+        if (value.__type === 'Map') {
+            return new Map(value.value);
+        }
+    }
+    return value;
+}
+
+function saveProjects() {
+    const serializedProjects = JSON.stringify(projectsStore, replacer);
+    localStorage.setItem('myProjects', serializedProjects);
+}
+
+function rehydrateProject(plainProject) {
+    let id = plainProject.id;
+
+    plainProject.getID = function() { return id; };
+
+    plainProject.updateTitle = function(newTitle) {
+        this.title = newTitle;
+        allProjects.set(id, this);
+    };
+
+    plainProject.getToDoMap = function() { return this.toDoMap; };
+
+    plainProject.addToDo = function(toDo) {
+        this.toDoMap.set(toDo.getID(), toDo);
+        allProjects.set(id, this);
+    };
+
+    plainProject.toJSON = function() {
+        return {
+            id: id,
+            title: this.title,
+            toDoMap: this.toDoMap
+        };
+    };
+
+    if (plainProject.toDoMap) {
+        plainProject.toDoMap.forEach(plainTodo => {
+            let todoId = plainTodo.id;
+            plainTodo.updateTitle = function(newTitle) {
+                this.title = newTitle;
+                allProjects.get(id).getToDoMap().set(id, this);
+            }
+            plainTodo.updateDescription = function(newDescription) {
+                this.description = newDescription;
+                allProjects.get(id).getToDoMap().set(id, this);
+            }
+            plainTodo.updatePriority = function(newPriority) {
+                this.priority = newPriority;
+            }
+            plainTodo.updateDueDate = function(newDueDate) {
+                this.dueDate = newDueDate;
+            }
+            plainTodo.toggle = function() {
+                this.completed = !this.completed;
+            }
+            plainTodo.getID = function() { return todoId; };
+            plainTodo.dueDate = parseISO(plainTodo.dueDate);
+        });
+    }
+    return plainProject;
+}
+
+function loadProjects() {
+    const storedProjects = localStorage.getItem('myProjects');
+    if (!storedProjects) return null;
+
+    const parsedProjects = JSON.parse(storedProjects, reviver);
+
+    parsedProjects.forEach((project, id) => {
+        const rehydratedProject = rehydrateProject(project);
+        parsedProjects.set(id, rehydratedProject);
+    });
+
+    return parsedProjects;
+}
 
 function createProject (title) {
     let uuid = self.crypto.randomUUID();
-    const project = {
-        title, toDoMap: new Map(),
 
-        getID() {
-            return uuid;
-        },
+    const project = {
+        title,
+        toDoMap: new Map(),
+
+        getID() { return uuid; },
 
         updateTitle(newTitle) {
             this.title = newTitle;
+            allProjects.set(uuid, this);
         },
-        getToDoMap() {
-            return this.toDoMap;
-        },
+        getToDoMap() { return this.toDoMap; },
 
         addToDo(toDo) {
             this.toDoMap.set(toDo.getID(), toDo);
+            allProjects.set(uuid, this);
+        },
+
+        toJSON() {
+            return {
+                id: uuid,
+                title: this.title,
+                toDoMap: this.toDoMap
+            };
         }
     };
     allProjects.set(uuid, project);
@@ -60,7 +150,7 @@ let flattenDatetoLocalTimeZone = (date) => {
     return localDueDate;
 }
 
-function renderProject (projectItem, firstIter) {
+function renderProject (projectItem, shouldFocus) {
     const project = document.createElement("div");
     project.classList.add("project");
     project.dataset.projectid = projectItem.getID();
@@ -76,7 +166,6 @@ function renderProject (projectItem, firstIter) {
     titleExpand.addEventListener("blur", e => {
         if (e.target.textContent != projectItem.title) {
             projectItem.updateTitle(e.target.textContent);
-            console.log(projectItem.title); 
         }
     })
 
@@ -95,8 +184,6 @@ function renderProject (projectItem, firstIter) {
         projectElement.remove();
     });
     title.appendChild(deleteBtn);
-
-    
 
     const addToDoBtn = document.createElement("button");
     addToDoBtn.className = "addToDoBtn";
@@ -132,7 +219,6 @@ function renderProject (projectItem, firstIter) {
         addToDoPriority.appendChild(option);
     });
 
-        // default priority
     addToDoPriority.value = "medium";
 
     let addToDoSubmit = document.createElement("button");
@@ -224,27 +310,38 @@ function renderProject (projectItem, firstIter) {
     });
 
     container.appendChild(project);
-    if (firstIter) {
+    if (shouldFocus) {
         project.click();
     }
 }
 
-let renderAllProjects = () => {
-    let firstIter = true;
+let renderAllProjects = (focusFirst = false) => {
+    container.textContent = '';
+    let isFirstProject = true;
     allProjects.forEach((projectItem => {
-        (firstIter) ? (renderProject(projectItem, firstIter), firstIter = false) : renderProject(projectItem);
+        renderProject(projectItem, isFirstProject && focusFirst);
+        isFirstProject = false;
     }))
 }
 
+function initialize() {
+    let focusFirst = false;
+    const loadedProjects = loadProjects();
+    
+    if (loadedProjects && loadedProjects.size > 0) {
+        loadedProjects.forEach((value, key) => {
+            projectsStore.set(key, value);
+        });
+    } else {
+        focusFirst = true;
+        const defaultProject = createProject("First project");
+        let toDo1 = createToDo("First to do", "Wonder what this is going to be about", "high", new Date());
+        defaultProject.addToDo(toDo1);
+    }
+    renderAllProjects(focusFirst);
+}
 
-const defaultProject = createProject("First project");
-
-let toDo1 = createToDo("First to do", "Wonder what this is going to be about", "high", new Date());
-defaultProject.addToDo(toDo1);
-
-renderAllProjects();
-
-console.log(allProjects);
+initialize();
 
 export {
     allProjects as allProjects,
