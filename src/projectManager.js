@@ -72,6 +72,7 @@ function rehydrateProject(plainProject) {
     };
 
     if (plainProject.toDoMap) {
+        plainProject.toDoMap = new Proxy(plainProject.toDoMap, mapProxyHandler);
         plainProject.toDoMap.forEach(plainTodo => {
             let todoId = plainTodo.id;
             plainTodo.updateTitle = function(newTitle) {
