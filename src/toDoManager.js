@@ -1,6 +1,15 @@
 import trashIcon from "./trash icon.svg"
 import { allProjects, saveProjects } from "./projectManager";
 
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
+
 function createToDo (title, description, priority, dueDate) {
     let uuid = self.crypto.randomUUID();
     const todo = {
@@ -58,6 +67,8 @@ function deleteBtnKeyboardInteraction (e) {
 }
 
 function renderTodo(todoitem) {
+    const debouncedUpdate = debounce(todoitem.update.bind(todoitem), 250);
+
     let deleteBtn = document.createElement("img");
     deleteBtn.src = trashIcon;
     deleteBtn.classList.add("delete-btn");
@@ -73,11 +84,9 @@ function renderTodo(todoitem) {
     title.textContent = todoitem.title;
     title.classList.add("todo-title");
     title.contentEditable= "plaintext-only";
-    title.addEventListener("blur", e => {
-        if (todoitem.title !== e.target.textContent) {
-            todoitem.update({ title: e.target.textContent });
-        }
-    })
+    title.addEventListener("input", e => {
+            debouncedUpdate({ title: e.target.textContent });
+    });
 
     let description = document.createElement("textarea");
     description.placeholder = "Click to add a description";
@@ -95,11 +104,8 @@ function renderTodo(todoitem) {
     };
 
     description.addEventListener("input", () => autoResize(description));
-
-    description.addEventListener("blur", e => {
-        if (todoitem.description !== e.target.value) {
-            todoitem.update({ description: e.target.value });
-        }
+    description.addEventListener("input", e => {
+        debouncedUpdate({ description: e.target.value });
     });
 
     setTimeout(() => {
@@ -113,9 +119,8 @@ function renderTodo(todoitem) {
     let dueDate = document.createElement("input");
     dueDate.type = "date";
     dueDate.valueAsDate = todoitem.dueDate;
-    dueDate.addEventListener("blur", e => {
-        const newDate = e.target.value;
-        todoitem.update({ dueDate: newDate });
+    dueDate.addEventListener("change", e => {
+        todoitem.update({ dueDate: e.target.value });
     });
 
     let priorityBadge = document.createElement("select");
