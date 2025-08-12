@@ -18,20 +18,8 @@ function createToDo (title, description, priority, dueDate) {
             this.completed = !this.completed;
         },
 
-        updateTitle(newTitle) {
-            this.title = newTitle;
-        },
-
-        updateDescription(newDescription) {
-            this.description = newDescription;
-        },
-
-        updatePriority(newPriority) {
-            this.priority = newPriority
-        },
-
-        updateDueDate(newDueDate) {
-            this.dueDate = newDueDate;
+        update(data) {
+            Object.assign(this, data);
         }
     };
     return todo;
@@ -75,7 +63,7 @@ function renderTodo(todoitem) {
     title.contentEditable= "plaintext-only";
     title.addEventListener("blur", e => {
         if (todoitem.title !== e.target.textContent) {
-            todoitem.updateTitle(e.target.textContent);
+            todoitem.update({ title: e.target.textContent });
         }
     })
 
@@ -98,7 +86,7 @@ function renderTodo(todoitem) {
 
     description.addEventListener("blur", e => {
         if (todoitem.description !== e.target.value) {
-            todoitem.updateDescription(e.target.value);
+            todoitem.update({ description: e.target.value });
         }
     });
 
@@ -115,7 +103,7 @@ function renderTodo(todoitem) {
     dueDate.valueAsDate = todoitem.dueDate;
     dueDate.addEventListener("blur", e => {
         const newDate = e.target.value;
-        todoitem.updateDueDate(newDate);
+        todoitem.update({ dueDate: newDate });
     });
 
     let priorityBadge = document.createElement("select");
@@ -137,7 +125,7 @@ function renderTodo(todoitem) {
     lowPriority.textContent = "Low";
 
     priorityBadge.addEventListener("change", e => {
-        todoitem.updatePriority(e.target.value);
+        todoitem.update({ priority: e.target.value });
     });
 
     priorityBadge.appendChild(highPriority);

@@ -25,6 +25,7 @@ const mapProxyHandler = {
 let projectsStore = new Map();
 let allProjects = new Proxy(projectsStore, mapProxyHandler);
 
+
 function replacer(key, value) {
     if(value instanceof Map) {
         return { __type: 'Map', value: Array.from(value.entries()) };
@@ -75,22 +76,13 @@ function rehydrateProject(plainProject) {
         plainProject.toDoMap = new Proxy(plainProject.toDoMap, mapProxyHandler);
         plainProject.toDoMap.forEach(plainTodo => {
             let todoId = plainTodo.id;
-            plainTodo.updateTitle = function(newTitle) {
-                this.title = newTitle;
-                allProjects.get(id).getToDoMap().set(id, this);
-            }
-            plainTodo.updateDescription = function(newDescription) {
-                this.description = newDescription;
-                allProjects.get(id).getToDoMap().set(id, this);
-            }
-            plainTodo.updatePriority = function(newPriority) {
-                this.priority = newPriority;
-            }
-            plainTodo.updateDueDate = function(newDueDate) {
-                this.dueDate = newDueDate;
+            plainTodo.update = function(data) {
+                Object.assign(this, data);
+                allProjects.set(id, plainProject);
             }
             plainTodo.toggle = function() {
                 this.completed = !this.completed;
+                allProjects.set(id, plainProject);
             }
             plainTodo.getID = function() { return todoId; };
             plainTodo.dueDate = parseISO(plainTodo.dueDate);
