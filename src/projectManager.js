@@ -86,6 +86,16 @@ function rehydrateProject(plainProject) {
             }
             plainTodo.getID = function() { return todoId; };
             plainTodo.dueDate = parseISO(plainTodo.dueDate);
+            plainTodo.toJSON = function() {
+                return {
+                    id: todoId,
+                    title: this.title,
+                    description: this.description,
+                    priority: this.priority,
+                    dueDate: this.dueDate,
+                    completed: this.completed
+                };
+            }
         });
     }
     return plainProject;
@@ -110,7 +120,7 @@ function createProject (title) {
 
     const project = {
         title,
-        toDoMap: new Map(),
+        toDoMap: new Proxy(new Map(), mapProxyHandler),
 
         getID() { return uuid; },
 
@@ -309,7 +319,7 @@ function renderProject (projectItem, shouldFocus) {
 }
 
 let renderAllProjects = (focusFirst = false) => {
-    container.textContent = '';
+    container.innerHTML = '';
     let isFirstProject = true;
     allProjects.forEach((projectItem => {
         renderProject(projectItem, isFirstProject && focusFirst);
@@ -339,5 +349,6 @@ initialize();
 export {
     allProjects as allProjects,
     createProject as createProject,
-    renderProject
+    renderProject, 
+    saveProjects
 };

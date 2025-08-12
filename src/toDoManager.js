@@ -1,5 +1,5 @@
 import trashIcon from "./trash icon.svg"
-import { allProjects } from "./projectManager";
+import { allProjects, saveProjects } from "./projectManager";
 
 function createToDo (title, description, priority, dueDate) {
     let uuid = self.crypto.randomUUID();
@@ -20,6 +20,18 @@ function createToDo (title, description, priority, dueDate) {
 
         update(data) {
             Object.assign(this, data);
+            saveProjects();
+        },
+
+        toJSON() {
+            return {
+                id: uuid,
+                title: this.title,
+                description: this.description,
+                priority: this.priority,
+                dueDate: this.dueDate,
+                completed: this.completed
+            };
         }
     };
     return todo;
